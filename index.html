@@ -15,15 +15,12 @@ body{margin:0;overflow:hidden;background:#111;color:white;font-family:'Segoe UI'
 .speedometer{position:absolute;bottom:20px;right:20px;background:rgba(0,0,0,0.7);padding:10px;border-radius:15px;font-weight:bold;font-size:18px;display:none;border:2px solid #ffcc00;text-align:center;width:80px}
 .menu-btn-game{position:absolute;top:15px;right:15px;width:50px;height:50px;background:rgba(0,0,0,0.7);border:1px solid #fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:24px;pointer-events:auto;cursor:pointer}
 
-/* ДЖОЙСТИК */
 .joystick-container{position:absolute;bottom:30px;left:30px;width:160px;height:160px;background:rgba(255,255,255,0.1);border-radius:50%;border:3px solid rgba(255,255,255,0.3);pointer-events:auto;touch-action:none;display:none}
 .joystick-knob{position:absolute;top:50%;left:50%;width:70px;height:70px;background:rgba(255,255,255,0.8);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
 
-/* КНОПКИ ВЫСОТЫ (для режима полёта) */
 .altitude-controls{position:absolute;bottom:40px;right:30px;display:none;flex-direction:column;gap:15px;pointer-events:auto}
 .alt-btn{width:70px;height:70px;background:rgba(0,0,0,0.7);border:3px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;cursor:pointer;user-select:none;touch-action:none}
 
-/* МЕНЮ */
 .overlay{position:absolute;inset:0;background:rgba(10,10,15,0.95);display:flex;flex-direction:row;align-items:stretch;pointer-events:auto;z-index:100}
 .overlay.hidden{display:none!important}
 .menu-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px;background:linear-gradient(90deg,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.7) 100%);border-right:2px solid #333;z-index:2;overflow-y:auto}
@@ -58,10 +55,9 @@ h1{font-size:38px;margin:0 0 10px 0;font-weight:900;color:#ffcc00;text-transform
 .color-option:hover{transform:scale(1.1)}
 .color-option.selected{border-color:#fff;box-shadow:0 0 15px rgba(255,255,255,0.5)}
 
-/* МОБИЛЬНАЯ АДАПТАЦИЯ */
 @media (max-width: 900px), (pointer: coarse) {
     .overlay { flex-direction: column; background: rgba(10,10,15,0.95); }
-    .menu-right { display: none; } /* Скрываем 3D превью на телефоне */
+    .menu-right { display: none; }
     .menu-left { padding: 20px; justify-content: flex-start; padding-top: 40px; border-right: none; }
     h1 { font-size: 28px; }
     .subtitle { margin-bottom: 20px; }
@@ -151,6 +147,7 @@ h1{font-size:38px;margin:0 0 10px 0;font-weight:900;color:#ffcc00;text-transform
                 <span style="color:#ffcc00; font-weight:bold;">Режим: ПОЛЁТ</span>
                 <button class="btn" id="buyFlyMode">500</button>
             </div>
+            <button class="btn" id="resetProgressBtn" style="border-color:#ff3333; color:#ff3333; margin-top:15px; text-align:center; justify-content:center;">СБРОСИТЬ ПРОГРЕСС</button>
         </div>
         
         <button class="btn primary" id="shopBackBtn" style="margin-top: 15px; flex-shrink: 0; text-align: center; justify-content: center;">НАЗАД</button>
@@ -165,6 +162,36 @@ window.onload = function() {
         document.body.innerHTML = '<h1 style="color:red;text-align:center;margin-top:50px;">Ошибка: three.min.js не найден в папке!</h1>'; 
         return; 
     }
+
+    // ===== СОХРАНЕНИЕ =====
+    const SAVE_KEY = 'dreamApartmentSave_v1';
+
+    function saveGame() {
+        try {
+            localStorage.setItem(SAVE_KEY, JSON.stringify({
+                coins: state.coins,
+                carColor: state.carColor,
+                parts: state.parts
+            }));
+        } catch (e) { console.warn('Не удалось сохранить игру:', e); }
+    }
+
+    function loadGame() {
+        try {
+            const raw = localStorage.getItem(SAVE_KEY);
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            if (typeof data.coins === 'number' && isFinite(data.coins)) state.coins = data.coins;
+            if (typeof data.carColor === 'number') state.carColor = data.carColor;
+            if (data.parts && typeof data.parts === 'object') {
+                // мержим только известные поля, чтобы не сломать структуру
+                for (const k in state.parts) {
+                    if (k in data.parts) state.parts[k] = data.parts[k];
+                }
+            }
+        } catch (e) { console.warn('Не удалось загрузить сохранение:', e); }
+    }
+    // ======================
 
     function createMemeTexture() {
         const canvas = document.createElement('canvas');
@@ -192,6 +219,8 @@ window.onload = function() {
         parts: { spoiler: false, neon: false, gold: false, antenna: false, tint: false, cape: 'none', meme: false, flyMode: false }, 
         raceActive: false, diff: 'med', currentLocation: 'track', isFlying: false
     };
+    loadGame();  // подгружаем прогресс до всех UI-обновлений
+
     let player = { mesh: null, angle: 0, speed: 0, lap: 1, nextCp: 0, neonLight: null, policeLight: null, capeObj: null, y: 0 };
     let bots = [];
     let cps = [], fullPath = [], trackObjects = [], keys = {}, joystick = {x:0, y:0, active:false};
@@ -295,6 +324,7 @@ window.onload = function() {
         if (state.coins >= cost) { 
             state.coins -= cost; 
             state.parts[k] = val; 
+            saveGame();  // ← сохраняем после покупки
             updateCoinsUI(); updateProgressUI(); loadMenuPreview();
             if (k === 'flyMode') updateLocationsMenu();
         } else alert('Мало монет!');
@@ -310,16 +340,38 @@ window.onload = function() {
     document.getElementById('buyMeme').onclick = () => buyPart('meme', 999);
     document.getElementById('buyFlyMode').onclick = () => buyPart('flyMode', 500);
 
+    // Сброс прогресса
+    document.getElementById('resetProgressBtn').onclick = () => {
+        if (!confirm('Сбросить весь прогресс? Монеты и все покупки будут удалены.')) return;
+        try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+        state.coins = 0;
+        state.carColor = 0xff3333;
+        state.parts = { spoiler: false, neon: false, gold: false, antenna: false, tint: false, cape: 'none', meme: false, flyMode: false };
+        state.isFlying = false;
+        state.currentLocation = 'track';
+        updateCoinsUI(); updateProgressUI(); updateLocationsMenu(); renderShop(); loadMenuPreview();
+    };
+
     function updateCoinsUI() {
         document.getElementById('shopCoinsDisplay').textContent = '💰 ' + state.coins;
-        const map = { spoiler: 'Spoiler', neon: 'Neon', gold: 'Gold', antenna: 'Antenna', tint: 'Tint', meme: 'Meme', flyMode: 'FlyMode' };
-        for (let k in map) { let btn = document.getElementById('buy' + map[k]); if (state.parts[k] && btn) { btn.textContent = 'Куплено'; btn.disabled = true; } }
-        
-        if (state.parts.cape !== 'none') {
-            document.getElementById('buyCapeRed').textContent = state.parts.cape === 0xff0000 ? 'Активен' : 'Сменить';
-            document.getElementById('buyCapeBlue').textContent = state.parts.cape === 0x0000ff ? 'Активен' : 'Сменить';
-            document.getElementById('buyCapeGold').textContent = state.parts.cape === 0xffd700 ? 'Активен' : 'Сменить';
+        // Обычные детали: куплено/нет
+        const map = { spoiler: ['Spoiler', 50], neon: ['Neon', 100], gold: ['Gold', 150], antenna: ['Antenna', 80], tint: ['Tint', 120], meme: ['Meme', 999], flyMode: ['FlyMode', 500] };
+        for (let k in map) {
+            const btn = document.getElementById('buy' + map[k][0]);
+            if (!btn) continue;
+            if (state.parts[k]) { btn.textContent = 'Куплено'; btn.disabled = true; }
+            else { btn.textContent = String(map[k][1]); btn.disabled = false; }
         }
+        // Плащи
+        const capes = [['buyCapeRed', 0xff0000, 150], ['buyCapeBlue', 0x0000ff, 150], ['buyCapeGold', 0xffd700, 300]];
+        capes.forEach(([id, val, price]) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            btn.disabled = false;
+            if (state.parts.cape === 'none') btn.textContent = String(price);
+            else if (state.parts.cape === val) btn.textContent = 'Активен';
+            else btn.textContent = 'Сменить';
+        });
     }
     function updateProgressUI() {
         let percent = Math.min(100, (state.coins / state.goal) * 100);
@@ -337,7 +389,9 @@ window.onload = function() {
             btn.style.backgroundColor = '#' + c.toString(16).padStart(6, '0'); 
             btn.onclick = () => { 
                 if (state.coins >= 20) { 
-                    state.coins -= 20; state.carColor = c; updateCoinsUI(); updateProgressUI(); 
+                    state.coins -= 20; state.carColor = c; 
+                    saveGame();  // ← сохраняем после смены цвета
+                    updateCoinsUI(); updateProgressUI(); 
                     if (player.mesh) player.mesh.children[0].material.color.setHex(c);
                     renderShop(); loadMenuPreview();
                 } else alert('Мало монет!'); 
@@ -365,6 +419,9 @@ window.onload = function() {
     }
 
     function populateScene(targetScene, type, isMenu = false) {
+        cps.length = 0;
+        if (!isMenu) fullPath.length = 0;
+
         for (let i = targetScene.children.length - 1; i >= 0; i--) {
             if (!targetScene.children[i].isLight) targetScene.remove(targetScene.children[i]);
         }
@@ -380,16 +437,32 @@ window.onload = function() {
         } else {
             if (type === 'track') {
                 targetScene.background = new THREE.Color(0x87CEEB); targetScene.fog = new THREE.Fog(0x87CEEB, 50, 180);
-                const g = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshStandardMaterial({ color: 0x2a5a2a })); g.rotation.x = -Math.PI/2; g.receiveShadow = true; targetScene.add(g);
-                for (let i = 0; i < 60; i++) { let x = Math.cos(Math.random()*Math.PI*2)*(80+Math.random()*100); let z = Math.sin(Math.random()*Math.PI*2)*(80+Math.random()*100); const tree = new THREE.Group(); const t1 = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.7, 3, 6), new THREE.MeshStandardMaterial({ color: 0x4a3018 })); t1.position.y = 1.5; t1.castShadow = true; tree.add(t1); const t2 = new THREE.Mesh(new THREE.DodecahedronGeometry(3), new THREE.MeshStandardMaterial({ color: 0x1a6a2a })); t2.position.y = 4.5; t2.castShadow = true; tree.add(t2); tree.position.set(x, 0, z); targetScene.add(tree); }
-            } else if (type === 'desert') { /* ... */ trackColor = 0x8b7355; }
-            else if (type === 'snow') { /* ... */ trackColor = 0x1a3b5c; }
-            else if (type === 'city') { /* ... */ trackColor = 0x2a2a3a; }
-            else if (type === 'lava') { /* ... */ trackColor = 0x442211; }
-            else if (type === 'space') { /* ... */ trackColor = 0x335599; }
+                for (let i = 0; i < 60; i++) {
+                    const ang = Math.random() * Math.PI * 2;
+                    const rad = 80 + Math.random() * 100;
+                    const x = Math.cos(ang) * rad;
+                    const z = Math.sin(ang) * rad;
+                    const tree = new THREE.Group();
+                    const t1 = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.7, 3, 6), new THREE.MeshStandardMaterial({ color: 0x4a3018 }));
+                    t1.position.y = 1.5; t1.castShadow = true; tree.add(t1);
+                    const t2 = new THREE.Mesh(new THREE.DodecahedronGeometry(3), new THREE.MeshStandardMaterial({ color: 0x1a6a2a }));
+                    t2.position.y = 4.5; t2.castShadow = true; tree.add(t2);
+                    tree.position.set(x, 0, z);
+                    targetScene.add(tree);
+                }
+            } else if (type === 'desert') { trackColor = 0x8b7355; }
+            else if (type === 'snow') { trackColor = 0x1a3b5c; }
+            else if (type === 'city') { trackColor = 0x2a2a3a; }
+            else if (type === 'lava') { trackColor = 0x442211; }
+            else if (type === 'space') { trackColor = 0x335599; }
             
-            // Земля и декор (упрощено для экономии места, но в рабочем коде они есть)
-            const g = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshStandardMaterial({ color: type === 'desert' ? 0xc2a06d : type === 'snow' ? 0xffffff : type === 'city' ? 0x222233 : type === 'lava' ? 0x1a0000 : 0x050510 }));
+            const groundColor = type === 'track' ? 0x2a5a2a
+                : type === 'desert' ? 0xc2a06d
+                : type === 'snow' ? 0xffffff
+                : type === 'city' ? 0x222233
+                : type === 'lava' ? 0x1a0000
+                : 0x050510;
+            const g = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshStandardMaterial({ color: groundColor }));
             g.rotation.x = -Math.PI/2; g.receiveShadow = true; targetScene.add(g);
 
             const vertices = [], indices = [];
@@ -450,7 +523,7 @@ window.onload = function() {
 
     let menuCar = null;
     function loadMenuPreview() {
-        if (window.innerWidth <= 900) return; // Не грузим 3D превью на телефоне
+        if (window.innerWidth <= 900) return;
         populateScene(menuScene, state.currentLocation, true);
         if (menuCar) menuScene.remove(menuCar);
         const carData = createCar(state.carColor, state.parts);
@@ -463,14 +536,14 @@ window.onload = function() {
     function stopEngine() { if (engineOsc) { engineOsc.stop(); engineOsc.disconnect(); engineGain.disconnect(); engineOsc = null; } }
 
     window.startRace = function(location) {
-        state.raceActive = true; timeLeft = 120; startEngine(); fullPath = []; cps = [];
+        state.raceActive = true; timeLeft = 120; startEngine();
         populateScene(scene, location, false);
         
         if (player.mesh) scene.remove(player.mesh); bots.forEach(b => scene.remove(b.mesh)); bots = [];
         const startPt = cps[0];
         const pData = createCar(state.carColor, state.parts);
-        let startY = state.isFlying ? 15 : 0;
-        player = { mesh: pData.group, neonLight: pData.light, capeObj: pData.capeObj, angle: 0, speed: 0, lap: 1, nextCp: 0, y: startY };
+        let startY = state.isFlying ? cps[0].y : 0;
+        player = { mesh: pData.group, neonLight: pData.light, capeObj: pData.capeObj, angle: 0, speed: 0, lap: 1, nextCp: 1, y: startY };
         player.mesh.position.set(startPt.x, startY, startPt.z); scene.add(player.mesh);
         
         document.getElementById('menuOverlay').classList.add('hidden'); document.getElementById('resultsOverlay').classList.add('hidden');
@@ -487,6 +560,7 @@ window.onload = function() {
         document.getElementById('resultsOverlay').classList.remove('hidden');
         if (win) { state.coins += 150; document.getElementById('resultsTitle').textContent = "ПОБЕДА!"; document.getElementById('resultsTitle').style.color = "#44ff88"; document.getElementById('resultsBody').innerHTML = '<div>Вы выиграли!</div>'; document.getElementById('rewardDisplay').textContent = '+150 💰'; } 
         else { state.coins += 10; document.getElementById('resultsTitle').textContent = "ПРОИГРЫШ"; document.getElementById('resultsTitle').style.color = "#ff3333"; document.getElementById('resultsBody').innerHTML = '<div>Вы не успели.</div>'; document.getElementById('rewardDisplay').textContent = '+10 💰'; }
+        saveGame();  // ← сохраняем начисленные монеты
         updateProgressUI();
     }
 
@@ -589,17 +663,18 @@ window.onload = function() {
 
             if (player.capeObj) player.capeObj.rotation.x = -0.5 + Math.sin(Date.now() * 0.01) * 0.1;
 
-            let tCp = cps[player.nextCp % cps.length];
-            let distToCp = state.isFlying 
+            const tCp = cps[player.nextCp % cps.length];
+            const distToCp = state.isFlying 
                 ? Math.sqrt((tCp.x - player.mesh.position.x)**2 + (tCp.y - player.mesh.position.y)**2 + (tCp.z - player.mesh.position.z)**2)
                 : Math.sqrt((tCp.x - player.mesh.position.x)**2 + (tCp.z - player.mesh.position.z)**2);
             
-            if (distToCp < (state.isFlying ? 8 : 200)) {
+            if (distToCp < (state.isFlying ? 6 : 10)) {
                 player.nextCp++;
-                if (player.nextCp >= (state.isFlying ? 10 : 8)) {
+                if (player.nextCp >= cps.length) {
                     player.lap++;
                     if (player.lap > 3) { endRace(true); return; }
-                    else { player.nextCp = 0; document.getElementById('lapDisplay').textContent = player.lap + '/3'; }
+                    player.nextCp = 0;
+                    document.getElementById('lapDisplay').textContent = player.lap + '/3';
                 }
             }
 
@@ -636,6 +711,9 @@ window.onload = function() {
         }
     }
     
+    // Инициализация UI с загруженным прогрессом
+    updateProgressUI();
+    updateCoinsUI();
     loadMenuPreview();
     animate();
 };
