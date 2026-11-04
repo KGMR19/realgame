@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Квартира Мечты: Мобильная</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%238fbf7f'/%3E%3Crect x='10' y='34' width='44' height='12' rx='3' fill='%23e05353'/%3E%3Crect x='18' y='24' width='26' height='12' rx='3' fill='%23e05353'/%3E%3Crect x='21' y='27' width='9' height='6' rx='1' fill='%23334a5a'/%3E%3Crect x='32' y='27' width='9' height='6' rx='1' fill='%23334a5a'/%3E%3Ccircle cx='20' cy='46' r='5' fill='%23222'/%3E%3Ccircle cx='44' cy='46' r='5' fill='%23222'/%3E%3Ccircle cx='20' cy='46' r='2' fill='%23bbb'/%3E%3Ccircle cx='44' cy='46' r='2' fill='%23bbb'/%3E%3C/svg%3E">
 <style>
 body{margin:0;overflow:hidden;background:#111;color:white;font-family:'Segoe UI',sans-serif;user-select:none}
 #ui{position:absolute;inset:0;pointer-events:none;z-index:10}
@@ -20,7 +21,10 @@ body{margin:0;overflow:hidden;background:#111;color:white;font-family:'Segoe UI'
 .overlay{position:absolute;inset:0;background:rgba(10,10,15,0.95);display:flex;flex-direction:row;align-items:stretch;pointer-events:auto;z-index:100}
 .overlay.hidden{display:none!important}
 .menu-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:26px;background:linear-gradient(90deg,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.7) 100%);border-right:2px solid #333;z-index:2;overflow-y:auto}
-.menu-right{flex:1;position:relative;background:transparent;display:flex;align-items:center;justify-content:center}
+.menu-right{flex:1;position:relative;background:transparent;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.menu-avatar{width:72px;height:72px;border-radius:18px;object-fit:cover;border:2px solid #ffcc00;box-shadow:0 0 16px rgba(255,204,0,0.35);margin-bottom:12px;display:block}
+.menu-right-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.35;z-index:0;pointer-events:none;filter:blur(2px) saturate(1.1)}
+.menu-3d{position:relative;z-index:2;width:100%;height:100%}
 h1{font-size:26px;margin:0 0 6px 0;font-weight:900;color:#ffcc00;text-transform:uppercase;letter-spacing:3px;text-shadow:0 0 16px rgba(255,204,0,0.4)}
 .subtitle{color:#aaa;font-size:12px;margin-bottom:18px;letter-spacing:1px}
 .coins{font-size:16px;margin-bottom:18px;color:#44ff88;font-weight:bold;text-shadow:0 0 10px rgba(68,255,136,0.3)}
@@ -64,6 +68,7 @@ h1{font-size:26px;margin:0 0 6px 0;font-weight:900;color:#ffcc00;text-transform:
     .overlay { flex-direction: column; background: rgba(10,10,15,0.95); }
     .menu-right { display: none; }
     .menu-left { padding: 14px; justify-content: flex-start; padding-top: 26px; border-right: none; }
+    .menu-avatar { width: 56px; height: 56px; border-radius: 14px; margin-bottom: 10px; }
     h1 { font-size: 20px; letter-spacing: 2px; }
     .subtitle { margin-bottom: 12px; font-size: 11px; }
     .coins { font-size: 14px; margin-bottom: 12px; }
@@ -94,6 +99,7 @@ h1{font-size:26px;margin:0 0 6px 0;font-weight:900;color:#ffcc00;text-transform:
 
 <div class="overlay" id="menuOverlay">
     <div class="menu-left">
+        <img class="menu-avatar" src="avatar.png" alt="avatar">
         <h1>КВАРТИРА МЕЧТЫ</h1>
         <div class="subtitle">Заработай на жильё в уличных гонках</div>
         <div class="coins" id="coinsDisplay">Накоплено: 0 / 100000 💰</div>
@@ -112,7 +118,10 @@ h1{font-size:26px;margin:0 0 6px 0;font-weight:900;color:#ffcc00;text-transform:
         <button class="btn" id="mpBtn" style="border-color:#44aaff; color:#44aaff;"><span>🌐 МУЛЬТИПЛЕЕР</span><span style="font-size:10px;color:#888;">WebRTC</span></button>
         <button class="btn" id="camModeBtn" style="border-color:#ff88cc; color:#ff88cc;"><span>🎥 КАМЕРА</span><span id="camModeLabel" style="font-size:10px;">3-е</span></button>
     </div>
-    <div class="menu-right" id="menu3DContainer"></div>
+    <div class="menu-right" id="menuRight">
+        <img class="menu-right-bg" src="avatar.png" alt="">
+        <div class="menu-3d" id="menu3DContainer"></div>
+    </div>
 </div>
 
 <div class="panel-overlay hidden" id="resultsOverlay">
