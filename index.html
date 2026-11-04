@@ -3,96 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Квартира Мечты: Мобильная</title>
+<title>Квартира Мечты: Мега Апдейт</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%238fbf7f'/%3E%3Crect x='10' y='34' width='44' height='12' rx='3' fill='%23e05353'/%3E%3Crect x='18' y='24' width='26' height='12' rx='3' fill='%23e05353'/%3E%3Crect x='21' y='27' width='9' height='6' rx='1' fill='%23334a5a'/%3E%3Crect x='32' y='27' width='9' height='6' rx='1' fill='%23334a5a'/%3E%3Ccircle cx='20' cy='46' r='5' fill='%23222'/%3E%3Ccircle cx='44' cy='46' r='5' fill='%23222'/%3E%3Ccircle cx='20' cy='46' r='2' fill='%23bbb'/%3E%3Ccircle cx='44' cy='46' r='2' fill='%23bbb'/%3E%3C/svg%3E">
 <style>
 body{margin:0;overflow:hidden;background:#111;color:white;font-family:'Segoe UI',sans-serif;user-select:none;touch-action:none}
 #ui{position:absolute;inset:0;pointer-events:none;z-index:10}
-.hud{position:absolute;top:15px;left:15px;background:rgba(0,0,0,0.7);padding:6px 14px;border-radius:14px;font-weight:bold;display:none;font-size:14px}
-.debt-bar{position:absolute;top:15px;left:50%;transform:translateX(-50%);width:44vw;max-width:240px;height:16px;background:rgba(0,0,0,0.7);border-radius:14px;border:2px solid #44ff88;display:none;overflow:hidden}
+.hud{position:absolute;top:15px;left:15px;background:rgba(0,0,0,0.6);padding:6px 14px;border-radius:14px;font-weight:bold;display:none;font-size:14px;backdrop-filter:blur(4px)}
+.health-bar{position:absolute;top:50px;left:15px;width:150px;height:14px;background:rgba(0,0,0,0.6);border-radius:10px;border:2px solid #ff3333;display:none;overflow:hidden;backdrop-filter:blur(4px)}
+.health-fill{height:100%;width:100%;background:#ff3333;transition:width 0.3s}
+.health-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:9px;font-weight:bold;text-shadow:1px 1px 2px #000}
+.debt-bar{position:absolute;top:15px;left:50%;transform:translateX(-50%);width:40vw;max-width:260px;height:18px;background:rgba(0,0,0,0.6);border-radius:14px;border:2px solid #44ff88;display:none;overflow:hidden;backdrop-filter:blur(4px)}
 .debt-fill{height:100%;width:0%;background:#44ff88;transition:width 0.3s}
-.debt-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:9px;font-weight:bold;white-space:nowrap}
-.speedometer{position:absolute;bottom:30px;right:30px;background:rgba(0,0,0,0.7);padding:8px;border-radius:12px;font-weight:bold;font-size:16px;display:none;border:2px solid #ffcc00;text-align:center;width:70px}
-.menu-btn-game{position:absolute;top:15px;right:15px;width:46px;height:46px;background:rgba(0,0,0,0.7);border:2px solid #fff;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:22px;pointer-events:auto;cursor:pointer}
-.joystick-container{position:absolute;bottom:40px;left:30px;width:140px;height:140px;background:rgba(255,255,255,0.1);border-radius:50%;border:3px solid rgba(255,255,255,0.3);pointer-events:auto;touch-action:none;display:none}
-.joystick-knob{position:absolute;top:50%;left:50%;width:60px;height:60px;background:rgba(255,255,255,0.8);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
-/* НОВАЯ КНОПКА ГАЗА */
-.gas-btn{position:absolute;bottom:50px;right:40px;width:80px;height:80px;background:rgba(68,255,136,0.2);border:3px solid #44ff88;border-radius:50%;display:none;pointer-events:auto;touch-action:none;font-weight:bold;color:#44ff88;font-size:16px;align-items:center;justify-content:center;transition:0.1s}
-.gas-btn:active{background:rgba(68,255,136,0.5);transform:scale(0.95)}
+.debt-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:bold;text-shadow:1px 1px 2px #000}
+.speedometer{position:absolute;bottom:120px;right:20px;background:rgba(0,0,0,0.6);padding:8px;border-radius:12px;font-weight:bold;font-size:16px;display:none;border:2px solid #ffcc00;text-align:center;width:70px;backdrop-filter:blur(4px)}
+.menu-btn-game{position:absolute;top:15px;right:15px;width:44px;height:44px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.5);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:20px;pointer-events:auto;cursor:pointer;backdrop-filter:blur(4px)}
+.reset-btn{position:absolute;bottom:200px;right:30px;width:40px;height:40px;background:rgba(255,68,68,0.2);border:2px solid #ff4444;border-radius:50%;display:none;pointer-events:auto;touch-action:none;font-weight:bold;color:#ff4444;font-size:18px;align-items:center;justify-content:center;transition:0.1s;backdrop-filter:blur(4px)}
+.reset-btn:active{background:rgba(255,68,68,0.5);transform:scale(0.95)}
+.nitro-btn{position:absolute;bottom:40px;right:20px;width:80px;height:80px;background:rgba(0,170,255,0.15);border:3px solid #00aaff;border-radius:50%;display:none;pointer-events:auto;touch-action:none;font-weight:bold;color:#00aaff;font-size:15px;align-items:center;justify-content:center;transition:0.1s;backdrop-filter:blur(4px);text-shadow:0 0 5px rgba(0,170,255,0.5);flex-direction:column;}
+.nitro-btn:active{background:rgba(0,170,255,0.4);transform:scale(0.95)}
+.nitro-btn.charging{opacity:0.5;pointer-events:none;}
+.nitro-fill{position:absolute;bottom:0;left:0;width:100%;height:0%;background:rgba(0,170,255,0.3);border-radius:50%;pointer-events:none;transition:height 0.1s}
+.drift-btn{position:absolute;bottom:150px;left:20px;width:60px;height:60px;background:rgba(255,0,255,0.15);border:3px solid #ff00ff;border-radius:50%;display:none;pointer-events:auto;touch-action:none;font-weight:bold;color:#ff00ff;font-size:12px;align-items:center;justify-content:center;transition:0.1s;backdrop-filter:blur(4px);text-shadow:0 0 5px rgba(255,0,255,0.5)}
+.drift-btn:active{background:rgba(255,0,255,0.4);transform:scale(0.95)}
+.joystick-container{position:absolute;bottom:30px;left:30px;width:140px;height:140px;background:rgba(255,255,255,0.1);border-radius:50%;border:2px solid rgba(255,255,255,0.3);pointer-events:auto;touch-action:none;display:none;backdrop-filter:blur(2px)}
+.joystick-knob{position:absolute;top:50%;left:50%;width:60px;height:60px;background:rgba(255,255,255,0.8);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 0 10px rgba(0,0,0,0.5)}
+.controls-hint{position:absolute;bottom:20px;left:220px;background:rgba(0,0,0,0.6);padding:6px 12px;border-radius:10px;font-size:11px;color:#ccc;display:none;line-height:1.4;pointer-events:none;backdrop-filter:blur(4px)}
+.controls-hint b{color:#fff}
 
-.overlay{position:absolute;inset:0;background:rgba(10,10,15,0.95);display:flex;flex-direction:column;align-items:stretch;pointer-events:auto;z-index:100}
+/* Меню */
+.overlay{position:absolute;inset:0;background:rgba(10,10,15,0.95);display:flex;flex-direction:row;align-items:stretch;pointer-events:auto;z-index:100}
 .overlay.hidden{display:none!important}
-.menu-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px;background:linear-gradient(180deg,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.7) 100%);z-index:2;overflow-y:auto;align-items:center;width:100%;box-sizing:border-box}
-h1{font-size:28px;margin:0 0 6px 0;font-weight:900;color:#ffcc00;text-transform:uppercase;letter-spacing:2px;text-shadow:0 0 16px rgba(255,204,0,0.4);text-align:center}
-.subtitle{color:#aaa;font-size:13px;margin-bottom:20px;letter-spacing:1px;text-align:center}
+.menu-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:30px;background:linear-gradient(90deg,rgba(10,10,15,0.95) 0%,rgba(10,10,15,0.7) 100%);border-right:2px solid #333;z-index:2;overflow-y:auto}
+.menu-right{flex:1;position:relative;background:transparent;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.menu-3d{position:relative;z-index:2;width:100%;height:100%}
+h1{font-size:28px;margin:0 0 6px 0;font-weight:900;color:#ffcc00;text-transform:uppercase;letter-spacing:2px;text-shadow:0 0 20px rgba(255,204,0,0.3)}
+.subtitle{color:#aaa;font-size:13px;margin-bottom:20px;letter-spacing:1px}
 .coins{font-size:18px;margin-bottom:20px;color:#44ff88;font-weight:bold;text-shadow:0 0 10px rgba(68,255,136,0.3)}
-.btn{background:rgba(255,255,255,0.05);border:2px solid #555;color:white;padding:14px 20px;border-radius:12px;font-size:16px;cursor:pointer;margin:6px 0;width:100%;max-width:400px;text-align:left;font-weight:bold;transition:all 0.2s;position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center}
-.btn:hover{background:rgba(255,255,255,0.15);border-color:#ffcc00;transform:translateX(6px);box-shadow:0 0 12px rgba(255,204,0,0.2)}
-.btn.primary{background:#ffcc00;color:#000;border-color:#ffcc00;justify-content:center}
-.btn.primary:hover{background:#ffdd33}
-.btn-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:400px;margin:10px 0;width:100%}
-.btn-group .btn{margin:0;text-align:center;justify-content:center;font-size:14px;padding:12px}
-.difficulty-group{display:flex;gap:8px;max-width:400px;margin:10px 0;width:100%}
-.difficulty-group .btn{margin:0;flex:1;text-align:center;justify-content:center;font-size:13px;padding:10px}
+.btn{background:rgba(255,255,255,0.05);border:2px solid #444;color:white;padding:12px 20px;border-radius:10px;font-size:15px;cursor:pointer;margin:6px 0;width:100%;max-width:360px;text-align:left;font-weight:bold;transition:all 0.2s;position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center}
+.btn:hover{background:rgba(255,255,255,0.1);border-color:#ffcc00;transform:translateX(5px);box-shadow:0 0 15px rgba(255,204,0,0.15)}
+.btn.primary{background:#ffcc00;color:#000;border-color:#ffcc00}
+.btn.primary:hover{background:#ffdd33;transform:translateX(5px)}
+.btn-group{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:360px;margin:10px 0}
+.btn-group .btn{margin:0;text-align:center;justify-content:center;font-size:13px;padding:10px}
+.difficulty-group{display:flex;gap:8px;max-width:360px;margin:10px 0}
+.difficulty-group .btn{margin:0;flex:1;text-align:center;justify-content:center;font-size:12px;padding:10px}
 
-.panel-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:auto;z-index:110;padding:15px}
+/* Панели */
+.panel-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:auto;z-index:110;padding:15px}
 .panel-overlay.hidden{display:none!important}
-.panel{background:#1a1a1a;border:2px solid #ffcc00;border-radius:16px;padding:20px;width:100%;max-width:500px;text-align:center;max-height:90vh;display:flex;flex-direction:column;box-sizing:border-box}
-.panel h1{font-size:22px;flex-shrink:0;margin-bottom:12px}
-.panel-scroll{overflow-y:auto; padding-right: 5px; flex-grow: 1; -webkit-overflow-scrolling: touch;}
+.panel{background:#151520;border:2px solid #ffcc00;border-radius:16px;padding:20px;width:100%;max-width:520px;text-align:center;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.panel h1{font-size:22px;flex-shrink:0;margin-bottom:10px}
+.panel-scroll{overflow-y:auto; padding-right: 8px; flex-grow: 1;}
 .panel-scroll::-webkit-scrollbar { width: 6px; }
 .panel-scroll::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
 .panel-scroll::-webkit-scrollbar-thumb { background: #ffcc00; border-radius: 4px; }
-.shop-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #333;font-size:14px;gap:8px}
-.shop-item button{width:auto;padding:8px 16px;font-size:13px;margin:0;background:#333;border-color:#555;border-radius:8px;white-space:nowrap}
+.shop-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #333;font-size:13px;gap:10px}
+.shop-item button{width:auto;padding:6px 16px;font-size:12px;margin:0;background:#333;border-color:#555;border-radius:6px;white-space:nowrap}
 .color-picker{display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
-.color-option{width:44px;height:44px;border-radius:10px;cursor:pointer;border:3px solid transparent;transition:0.2s}
-.color-option.selected{border-color:#fff;box-shadow:0 0 12px rgba(255,255,255,0.5)}
-.cape-preview{width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid #ffcc00;background:#222;display:block;margin:0 auto 10px}
-.lottery-wrap{position:relative;width:100%;max-width:420px;margin:15px auto;touch-action:none;user-select:none}
-#lotteryCanvas{display:block;width:100%;height:auto;border-radius:12px;background:#333;cursor:crosshair;touch-action:none;pointer-events:auto}
-.lottery-msg{min-height:24px;font-size:14px;font-weight:bold;margin:10px 0;color:#ffcc00}
-.lottery-msg.win{color:#44ff88}
-.lottery-msg.lose{color:#ff5555}
-.lottery-hint{font-size:11px;color:#888;margin-top:5px}
-.mp-textarea{width:100%;background:#111;color:#44ff88;border:1px solid #444;border-radius:8px;padding:8px;font-size:11px;font-family:monospace;resize:vertical;box-sizing:border-box}
-.mp-status{color:#ffcc00;font-size:14px;min-height:34px;margin:8px 0}
+.color-option{width:40px;height:40px;border-radius:10px;cursor:pointer;border:3px solid transparent;transition:0.2s}
+.color-option:hover{transform:scale(1.1)}
+.color-option.selected{border-color:#fff;box-shadow:0 0 15px rgba(255,255,255,0.5)}
+.mp-textarea{width:100%;background:#111;color:#44ff88;border:1px solid #444;border-radius:6px;padding:8px;font-size:11px;font-family:monospace;resize:vertical;box-sizing:border-box}
+.mp-status{color:#ffcc00;font-size:14px;min-height:36px;margin:8px 0}
 .mp-status.ok{color:#44ff88}
 .mp-status.err{color:#ff5555}
-#minimap{position:absolute;top:15px;right:75px;width:90px;height:90px;background:rgba(0,0,0,0.75);border:2px solid #ffcc00;border-radius:50%;display:none;pointer-events:none;z-index:11;overflow:hidden}
+#minimap{position:absolute;top:15px;right:70px;width:110px;height:110px;background:rgba(0,0,0,0.6);border:2px solid #ffcc00;border-radius:50%;display:none;pointer-events:none;z-index:11;overflow:hidden;backdrop-filter:blur(4px)}
 #minimap canvas{display:block;width:100%!important;height:100%!important}
-#fpsCounter{position:absolute;top:15px;right:180px;background:rgba(0,0,0,0.7);padding:4px 8px;border-radius:8px;font-size:10px;color:#44ff88;font-family:monospace;display:none;z-index:11}
+#fpsCounter{position:absolute;top:15px;right:190px;background:rgba(0,0,0,0.6);padding:4px 10px;border-radius:8px;font-size:11px;color:#44ff88;font-family:monospace;display:none;z-index:11;backdrop-filter:blur(4px)}
+@media (max-width: 900px), (pointer: coarse) {
+    .overlay { flex-direction: column; background: rgba(10,10,15,0.95); }
+    .menu-right { display: none; }
+    .menu-left { padding: 20px; justify-content: flex-start; padding-top: 30px; border-right: none; }
+    h1 { font-size: 22px; letter-spacing: 1px; }
+    .subtitle { margin-bottom: 15px; font-size: 12px; }
+    .coins { font-size: 16px; margin-bottom: 15px; }
+    .btn { padding: 10px 16px; font-size: 14px; margin: 5px 0; }
+    .btn-group .btn { padding: 10px; font-size: 12px; }
+    .difficulty-group .btn { padding: 8px; font-size: 11px; }
+    .panel { padding: 15px; border-radius: 14px; }
+    .panel h1 { font-size: 18px; }
+    .controls-hint { left: 220px; font-size: 10px; }
+    #minimap{width:80px;height:80px;top:12px;right:60px}
+    #fpsCounter{top:12px;right:150px;font-size:9px}
+}
 </style>
 </head>
 <body>
 <div id="ui">
 <div class="hud" id="hud">Круг: <span id="lapDisplay">1/3</span></div>
+<div class="health-bar" id="healthBar"><div class="health-fill" id="healthFill"></div><div class="health-text" id="healthText">HP: 100</div></div>
 <div class="debt-bar" id="debtBar"><div class="debt-fill" id="debtFill"></div><div class="debt-text" id="debtText">Накоплено: 0 / 100000</div></div>
 <div class="speedometer" id="speedo"><span id="speedoVal">0</span> <div style="font-size:9px;color:#aaa;">км/ч</div></div>
 <div class="menu-btn-game" id="menuBtnGame">☰</div>
 <div class="joystick-container" id="joystick"><div class="joystick-knob" id="joystickKnob"></div></div>
-<div class="gas-btn" id="gasBtn">ГАЗ</div>
-<div id="minimap"><canvas id="minimapCanvas" width="100" height="100"></canvas></div>
+<div class="nitro-btn" id="nitroBtn">
+    <div class="nitro-fill" id="nitroFill"></div>
+    <span>НИТРО</span>
+</div>
+<div class="drift-btn" id="driftBtn">ДРИФТ</div>
+<div class="reset-btn" id="resetBtn">↺</div>
+<div id="minimap"><canvas id="minimapCanvas" width="110" height="110"></canvas></div>
 <div id="fpsCounter">60 FPS</div>
+<div class="controls-hint" id="controlsHint">
+    <b>WASD:</b> руль/газ · <b>Пробел:</b> дрифт · <b>Shift:</b> нитро · <b>R:</b> сброс
+</div>
 
 <div class="overlay" id="menuOverlay">
     <div class="menu-left">
         <h1>КВАРТИРА МЕЧТЫ</h1>
-        <div class="subtitle">Заработай на жильё в гонках</div>
+        <div class="subtitle">Заработай на жильё в уличных гонках</div>
         <div class="coins" id="coinsDisplay">Накоплено: 0 / 100000 💰</div>
+        
+        <div class="btn-group" style="margin-bottom:10px">
+            <button class="btn" id="modeNormal" style="border-color:#44ff88; color:#44ff88;">Гонка</button>
+            <button class="btn" id="modeElim" style="border-color:#ff3333; color:#ff3333;">Выживание</button>
+        </div>
+
         <button class="btn primary" id="btnRaceStart">
-            <span>НАЧАТЬ ГОНКУ</span>
+            <span>НАЧАТЬ</span>
+            <span style="font-size:18px;">➤</span>
         </button>
+        
         <div class="btn-group" id="racingLocations"></div>
+        
         <div class="difficulty-group">
             <button class="btn" id="diffEasy" style="border-color:#44ff88; color:#44ff88;">Легко</button>
             <button class="btn" id="diffMed" style="border-color:#ffcc00; color:#ffcc00;">Средне</button>
             <button class="btn" id="diffHard" style="border-color:#ff3333; color:#ff3333;">Сложно</button>
         </div>
-        <button class="btn" id="shopBtn"><span>АВТОСАЛОН</span><span>🛒</span></button>
-        <button class="btn" id="lotteryBtn"><span>🎰 ЛОТЕРЕЯ</span><span id="lotteryStatusBadge" style="font-size:12px;color:#44ff88;"></span></button>
-        <button class="btn" id="mpBtn" style="border-color:#44aaff; color:#44aaff;"><span>🌐 МУЛЬТИПЛЕЕР</span><span style="font-size:11px;color:#888;">WebRTC</span></button>
-        <button class="btn" id="camModeBtn" style="border-color:#ff88cc; color:#ff88cc;"><span>🎥 КАМЕРА</span><span id="camModeLabel" style="font-size:12px;">3-е</span></button>
+        
+        <button class="btn" id="garageBtn"><span>ГАРАЖ</span><span>🏠</span></button>
+        <button class="btn" id="lootboxBtn" style="border-color:#ff00ff; color:#ff00ff;"><span>🎁 ЛУТБОКС</span><span>100 💰</span></button>
+        <button class="btn" id="wheelBtn" style="border-color:#ffcc00; color:#ffcc00;"><span>🎡 КОЛЕСО ФОРТУНЫ</span><span>Бесплатно</span></button>
+        <button class="btn" id="mpBtn" style="border-color:#44aaff; color:#44aaff;"><span>🌐 МУЛЬТИПЛЕЕР</span><span style="font-size:10px;color:#888;">WebRTC</span></button>
+        <button class="btn" id="camModeBtn" style="border-color:#ff88cc; color:#ff88cc;"><span>🎥 КАМЕРА</span><span id="camModeLabel" style="font-size:10px;">3-е</span></button>
+    </div>
+    <div class="menu-right" id="menuRight">
+        <div class="menu-3d" id="menu3DContainer"></div>
     </div>
 </div>
 
@@ -105,51 +152,41 @@ h1{font-size:28px;margin:0 0 6px 0;font-weight:900;color:#ffcc00;text-transform:
     </div>
 </div>
 
-<div class="panel-overlay hidden" id="shopOverlay">
-    <div class="panel">
-        <h1>АВТОСАЛОН</h1>
-        <div class="coins" id="shopCoinsDisplay">💰 0</div>
+<div class="panel-overlay hidden" id="garageOverlay">
+    <div class="panel" style="max-width:600px;">
+        <h1>🏠 ГАРАЖ</h1>
+        <div class="coins" id="garageCoinsDisplay">💰 0</div>
         <div class="panel-scroll">
+            <div style="color:#aaa; margin-bottom:5px; font-size:12px; text-align:left;">Машины:</div>
+            <div class="shop-item"><span>Классика</span><button class="btn" id="carClassic">Бесплатно</button></div>
+            <div class="shop-item"><span>Спорткар (быстрее)</span><button class="btn" id="carSport">2000</button></div>
+            <div class="shop-item"><span>Внедорожник (руль)</span><button class="btn" id="carSUV">3000</button></div>
+
+            <div style="color:#aaa; margin:15px 0 5px 0; font-size:12px; text-align:left;">Скины (покупка):</div>
+            <div class="shop-item"><span>Полиция</span><button class="btn" id="skinPolice">500</button></div>
+            <div class="shop-item"><span>Такси</span><button class="btn" id="skinTaxi">500</button></div>
+            <div class="shop-item"><span>Ралли (полоски)</span><button class="btn" id="skinRally">800</button></div>
+            <div class="shop-item"><span>Камуфляж</span><button class="btn" id="skinCamo">1000</button></div>
+            <div class="shop-item"><span>Без скина</span><button class="btn" id="skinNone">Снять</button></div>
+
+            <div style="color:#aaa; margin:15px 0 5px 0; font-size:12px; text-align:left;">Украшения (только из сундуков):</div>
+            <div id="garageDecorList" style="display:flex; flex-direction:column; gap:6px;"></div>
+
+            <div style="color:#aaa; margin:15px 0 5px 0; font-size:12px; text-align:left;">Цвет кузова:</div>
             <div class="color-picker" id="colorPicker"></div>
-            <div class="shop-item"><span>Спойлер</span><button class="btn" id="buySpoiler">50</button></div>
-            <div class="shop-item"><span>Неон</span><button class="btn" id="buyNeon">100</button></div>
-            <div class="shop-item"><span>Диски</span><button class="btn" id="buyGold">150</button></div>
-            <div class="shop-item"><span>Антенна</span><button class="btn" id="buyAntenna">80</button></div>
-            <div class="shop-item"><span>Тонировка</span><button class="btn" id="buyTint">120</button></div>
-            <div class="shop-item"><span>Багажник</span><button class="btn" id="buyRoofRack">120</button></div>
-            <div class="shop-item"><span>Обвес</span><button class="btn" id="buyBodyKit">200</button></div>
-            <div class="shop-item"><span>Выхлоп</span><button class="btn" id="buyExhaust">90</button></div>
-            <div class="shop-item"><span>Наклейки</span><button class="btn" id="buyDecals">70</button></div>
-            <div class="shop-item"><span>Второй неон</span><button class="btn" id="buyNeon2">80</button></div>
-            <div class="shop-item"><span>Тёмные фары</span><button class="btn" id="buySmoked">60</button></div>
-            <div class="shop-item"><span>Хром-диски</span><button class="btn" id="buyChrome">130</button></div>
-            <div class="shop-item"><span>Огромный спойлер</span><button class="btn" id="buyBigSpoiler">250</button></div>
-            <div class="shop-item"><span>Плащ: Красный</span><button class="btn" id="buyCapeRed">150</button></div>
-            <div class="shop-item"><span>Плащ: Синий</span><button class="btn" id="buyCapeBlue">150</button></div>
-            <div class="shop-item"><span>Плащ: Золотой</span><button class="btn" id="buyCapeGold">300</button></div>
-            <div class="shop-item"><span>Плащ: Фиолетовый</span><button class="btn" id="buyCapePurple">200</button></div>
-            <div class="shop-item"><span>Мем-текстура</span><button class="btn" id="buyMeme">999</button></div>
-            <div class="shop-item" style="border-top: 2px solid #44ff88; padding-top: 15px; flex-direction:column; align-items:stretch; gap:10px;">
-                <div style="color:#44ff88; font-weight:bold; text-align:center; font-size:14px;">📷 Плащ из галереи — БЕСПЛАТНО</div>
-                <img id="capePreviewImg" class="cape-preview" style="display:none;" alt="preview">
+
+            <div class="shop-item" style="margin-top:10px; border:none;"><span>Ремонт машины (HP)</span><button class="btn" id="repairBtn">50</button></div>
+            
+            <div class="shop-item" style="border-top: 2px solid #44ff88; padding-top: 12px; flex-direction:column; align-items:stretch; gap:8px;">
+                <div style="color:#44ff88; font-weight:bold; text-align:center; font-size:13px;">📷 Плащ из галереи — БЕСПЛАТНО</div>
+                <img id="capePreviewImg" style="display:none; width:70px; height:70px; object-fit:cover; border-radius:10px; border:2px solid #ffcc00; background:#222; margin:0 auto;" alt="preview">
                 <button class="btn" id="loadCapeImgBtn" style="border-color:#44ff88; color:#44ff88; text-align:center; justify-content:center;">Загрузить картинку</button>
                 <button class="btn" id="clearCapeImgBtn" style="display:none; border-color:#ff3333; color:#ff3333; text-align:center; justify-content:center;">Сбросить плащ</button>
                 <input type="file" id="capeFileInput" accept="image/*" style="display:none">
             </div>
-            <button class="btn" id="resetProgressBtn" style="border-color:#ff3333; color:#ff3333; margin-top:15px; text-align:center; justify-content:center;">СБРОСИТЬ ПРОГРЕСС</button>
+            <button class="btn" id="resetProgressBtn" style="border-color:#ff3333; color:#ff3333; margin-top:12px; text-align:center; justify-content:center;">СБРОСИТЬ ПРОГРЕСС</button>
         </div>
-        <button class="btn primary" id="shopBackBtn" style="margin-top: 15px; flex-shrink: 0; text-align: center; justify-content: center;">НАЗАД</button>
-    </div>
-</div>
-
-<div class="panel-overlay hidden" id="lotteryOverlay">
-    <div class="panel" style="max-width:480px;">
-        <h1>🎰 ЛОТЕРЕЯ</h1>
-        <div class="lottery-msg" id="lotteryMsg">Сотри все 6 ячеек!</div>
-        <div class="lottery-wrap"><canvas id="lotteryCanvas"></canvas></div>
-        <div class="lottery-hint">Шанс монеты: 20% · Победа: ровно 3 монеты 💰 → +500</div>
-        <button class="btn" id="lotteryOpenAllBtn" style="text-align:center; justify-content:center;">Открыть все ячейки</button>
-        <button class="btn primary" id="lotteryCloseBtn" style="text-align:center; justify-content:center; margin-top:10px;">ЗАКРЫТЬ</button>
+        <button class="btn primary" id="garageBackBtn" style="margin-top: 12px; flex-shrink: 0; text-align: center; justify-content: center;">НАЗАД</button>
     </div>
 </div>
 
@@ -159,9 +196,9 @@ h1{font-size:28px;margin:0 0 6px 0;font-weight:900;color:#ffcc00;text-transform:
         <div id="mpStep1">
             <p style="color:#aaa;font-size:13px;margin:5px 0;">1. Создатель получает код → отправь другу</p>
             <button class="btn primary" id="mpHostBtn" style="text-align:center;justify-content:center;">СОЗДАТЬ ИГРУ (хост)</button>
-            <p style="color:#aaa;font-size:13px;margin-top:15px;">2. Или вставь код-приглашение от друга:</p>
+            <p style="color:#aaa;font-size:13px;margin-top:16px;">2. Или вставь код-приглашение от друга:</p>
             <textarea id="mpOfferInput" class="mp-textarea" placeholder="Offer..." style="height:60px;"></textarea>
-            <button class="btn" id="mpJoinBtn" style="text-align:center;justify-content:center;border-color:#44aaff;color:#44aaff;margin-top:10px;">ПРИНЯТЬ (клиент)</button>
+            <button class="btn" id="mpJoinBtn" style="text-align:center;justify-content:center;border-color:#44aaff;color:#44aaff;margin-top:8px;">ПРИНЯТЬ (клиент)</button>
         </div>
         <div id="mpStep2" style="display:none;">
             <p id="mpStatus" class="mp-status">Инициализация...</p>
@@ -169,7 +206,7 @@ h1{font-size:28px;margin:0 0 6px 0;font-weight:900;color:#ffcc00;text-transform:
                 <p style="color:#aaa;font-size:12px;margin:5px 0;">Оффер (отправь другу):</p>
                 <textarea id="mpOfferOut" class="mp-textarea" readonly style="height:60px;color:#ffcc00;"></textarea>
                 <button class="btn" id="mpCopyOffer" style="text-align:center;justify-content:center;">📋 Скопировать</button>
-                <p style="color:#aaa;font-size:12px;margin-top:15px;">Ответ от друга (вставь сюда):</p>
+                <p style="color:#aaa;font-size:12px;margin-top:16px;">Ответ от друга (вставь сюда):</p>
                 <textarea id="mpAnswerIn" class="mp-textarea" placeholder="Answer..." style="height:60px;"></textarea>
                 <button class="btn primary" id="mpAcceptAnswer" style="text-align:center;justify-content:center;">ПОДКЛЮЧИТЬ</button>
             </div>
@@ -179,12 +216,12 @@ h1{font-size:28px;margin:0 0 6px 0;font-weight:900;color:#ffcc00;text-transform:
                 <button class="btn" id="mpCopyAnswer" style="text-align:center;justify-content:center;">📋 Скопировать</button>
             </div>
         </div>
-        <button class="btn" id="mpCloseBtn" style="text-align:center;justify-content:center;margin-top:10px;">ЗАКРЫТЬ</button>
+        <button class="btn" id="mpCloseBtn" style="text-align:center;justify-content:center;margin-top:12px;">ЗАКРЫТЬ</button>
     </div>
 </div>
 </div>
 
-<script src="three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 window.onload = function() {
     if (typeof THREE === 'undefined') { 
@@ -194,50 +231,49 @@ window.onload = function() {
 
     const elSpeedoVal = document.getElementById('speedoVal');
     const elMenuOverlay = document.getElementById('menuOverlay');
+    const elMenuContainer = document.getElementById('menu3DContainer');
     const elHud = document.getElementById('hud');
+    const elHealthBar = document.getElementById('healthBar');
+    const elHealthFill = document.getElementById('healthFill');
+    const elHealthText = document.getElementById('healthText');
     const elDebtBar = document.getElementById('debtBar');
     const elSpeedo = document.getElementById('speedo');
     const elMenuBtn = document.getElementById('menuBtnGame');
     const elJoystick = document.getElementById('joystick');
-    const elGasBtn = document.getElementById('gasBtn');
+    const elNitroBtn = document.getElementById('nitroBtn');
+    const elNitroFill = document.getElementById('nitroFill');
+    const elDriftBtn = document.getElementById('driftBtn');
+    const elResetBtn = document.getElementById('resetBtn');
     const elResultsOverlay = document.getElementById('resultsOverlay');
-    const elShopOverlay = document.getElementById('shopOverlay');
+    const elGarageOverlay = document.getElementById('garageOverlay');
     const elLapDisplay = document.getElementById('lapDisplay');
-    const elLotteryOverlay = document.getElementById('lotteryOverlay');
-    const elLotteryStatusBadge = document.getElementById('lotteryStatusBadge');
+    const elControlsHint = document.getElementById('controlsHint');
     const elMpOverlay = document.getElementById('mpOverlay');
     const elMinimap = document.getElementById('minimap');
     const elFpsCounter = document.getElementById('fpsCounter');
 
-    const SAVE_KEY = 'dreamApartmentSave_v1';
+    const SAVE_KEY = 'dreamApartmentSave_v3';
     function saveGame() {
-        try { localStorage.setItem(SAVE_KEY, JSON.stringify({ coins: state.coins, carColor: state.carColor, parts: state.parts, capeTexture: state.capeTexture, lotteryLastDate: state.lotteryLastDate, firstPerson: state.firstPerson })); }
+        try { localStorage.setItem(SAVE_KEY, JSON.stringify({ 
+            coins: state.coins, carColor: state.carColor, parts: state.parts, 
+            currentSkin: state.currentSkin, currentCar: state.currentCar,
+            firstPerson: state.firstPerson, hp: state.hp, hasWheelSpunToday: state.hasWheelSpunToday
+        })); }
         catch (e) { console.warn('save fail', e); }
     }
     function loadGame() {
         try {
             const raw = localStorage.getItem(SAVE_KEY); if (!raw) return;
             const data = JSON.parse(raw);
-            if (typeof data.coins === 'number' && isFinite(data.coins)) state.coins = data.coins;
+            if (typeof data.coins === 'number') state.coins = data.coins;
             if (typeof data.carColor === 'number') state.carColor = data.carColor;
             if (data.parts && typeof data.parts === 'object') for (const k in state.parts) if (k in data.parts) state.parts[k] = data.parts[k];
-            if (typeof data.capeTexture === 'string') state.capeTexture = data.capeTexture;
-            if (typeof data.lotteryLastDate === 'string') state.lotteryLastDate = data.lotteryLastDate;
+            if (typeof data.currentSkin === 'string') state.currentSkin = data.currentSkin;
+            if (typeof data.currentCar === 'string') state.currentCar = data.currentCar;
             if (typeof data.firstPerson === 'boolean') state.firstPerson = data.firstPerson;
+            if (typeof data.hp === 'number') state.hp = data.hp;
+            if (typeof data.hasWheelSpunToday === 'boolean') state.hasWheelSpunToday = data.hasWheelSpunToday;
         } catch (e) { console.warn('load fail', e); }
-    }
-
-    function createMemeTexture() {
-        const canvas = document.createElement('canvas');
-        canvas.width = 512; canvas.height = 512;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#4a6b3a'; ctx.fillRect(0, 0, 512, 512);
-        ctx.strokeStyle = '#2a4b1a'; ctx.lineWidth = 4;
-        for(let i=0; i<512; i+=32) for(let j=0; j<512; j+=32) { ctx.beginPath(); ctx.arc(i, j, 16, 0, Math.PI); ctx.stroke(); }
-        ctx.fillStyle = 'white'; ctx.font = 'bold 80px sans-serif'; ctx.fillText('rіпотіпуза', 50, 300);
-        const tex = new THREE.CanvasTexture(canvas);
-        if (THREE.sRGBEncoding !== undefined) tex.encoding = THREE.sRGBEncoding;
-        return tex;
     }
 
     function makeAsphaltTexture(colorHex) {
@@ -247,20 +283,12 @@ window.onload = function() {
         ctx.fillStyle = base; ctx.fillRect(0, 0, 512, 512);
         const img = ctx.getImageData(0, 0, 512, 512);
         for (let i = 0; i < img.data.length; i += 4) {
-            const n = (Math.random() - 0.5) * 40;
+            const n = (Math.random() - 0.5) * 30;
             img.data[i] = Math.max(0, Math.min(255, img.data[i] + n));
             img.data[i+1] = Math.max(0, Math.min(255, img.data[i+1] + n));
             img.data[i+2] = Math.max(0, Math.min(255, img.data[i+2] + n));
         }
         ctx.putImageData(img, 0, 0);
-        ctx.strokeStyle = 'rgba(0,0,0,0.25)'; ctx.lineWidth = 1;
-        for (let i = 0; i < 40; i++) {
-            ctx.beginPath();
-            let x = Math.random() * 512, y = Math.random() * 512;
-            ctx.moveTo(x, y);
-            for (let j = 0; j < 6; j++) { x += (Math.random() - 0.5) * 60; y += (Math.random() - 0.5) * 60; ctx.lineTo(x, y); }
-            ctx.stroke();
-        }
         const tex = new THREE.CanvasTexture(c);
         if (THREE.sRGBEncoding !== undefined) tex.encoding = THREE.sRGBEncoding;
         tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
@@ -268,88 +296,118 @@ window.onload = function() {
         return tex;
     }
 
-    let state = { coins: 0, goal: 100000, carColor: 0xff3333, 
-        parts: { spoiler: false, neon: false, gold: false, antenna: false, tint: false, cape: 'none', meme: false,
-                 roofRack: false, bodyKit: false, exhaust: false, decals: false, neon2: false, smoked: false, chrome: false, bigSpoiler: false }, 
-        capeTexture: null, lotteryLastDate: null,
-        raceActive: false, diff: 'med', currentLocation: 'track', firstPerson: false };
+    function createSkinTexture(type) {
+        const c = document.createElement('canvas'); c.width = c.height = 512;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 512, 512);
+        
+        if (type === 'police') {
+            ctx.fillStyle = '#111111'; ctx.fillRect(0, 0, 512, 512);
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 200, 512, 112);
+            ctx.fillStyle = '#0000ff'; ctx.fillRect(0, 200, 50, 112);
+            ctx.fillRect(462, 200, 50, 112);
+            ctx.fillStyle = '#ff0000'; ctx.fillRect(0, 200, 20, 112);
+            ctx.fillRect(492, 200, 20, 112);
+        } else if (type === 'taxi') {
+            ctx.fillStyle = '#ffcc00'; ctx.fillRect(0, 0, 512, 512);
+            ctx.fillStyle = '#111111'; for (let i=0; i<512; i+=64) ctx.fillRect(i, 0, 32, 512);
+        } else if (type === 'rally') {
+            ctx.fillStyle = '#3366ff'; ctx.fillRect(0, 0, 512, 512);
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(150, 0, 100, 512); ctx.fillRect(350, 0, 100, 512);
+            ctx.fillStyle = '#ff3333'; ctx.fillRect(250, 0, 100, 512);
+        } else if (type === 'camo') {
+            ctx.fillStyle = '#4a6b3a'; ctx.fillRect(0, 0, 512, 512);
+            ctx.fillStyle = '#2a4b1a'; for(let i=0;i<20;i++) { ctx.beginPath(); ctx.arc(Math.random()*512, Math.random()*512, 30+Math.random()*40, 0, Math.PI*2); ctx.fill(); }
+            ctx.fillStyle = '#7a8b6a'; for(let i=0;i<20;i++) { ctx.beginPath(); ctx.arc(Math.random()*512, Math.random()*512, 20+Math.random()*30, 0, Math.PI*2); ctx.fill(); }
+        }
+        const tex = new THREE.CanvasTexture(c);
+        if (THREE.sRGBEncoding !== undefined) tex.encoding = THREE.sRGBEncoding;
+        return tex;
+    }
+
+    let state = { coins: 0, goal: 100000, carColor: 0xff3333, currentSkin: 'none', currentCar: 'classic', hp: 100,
+        parts: { spoiler: false, neon: false, gold: false, antenna: false, tint: false, roofRack: false, bodyKit: false, exhaust: false, decals: false, neon2: false, smoked: false, chrome: false, bigSpoiler: false, carSport: false, carSUV: false, skinPolice: false, skinTaxi: false, skinRally: false, skinCamo: false }, 
+        raceActive: false, diff: 'med', currentLocation: 'track', firstPerson: false, mode: 'normal', weather: 'day', hasWheelSpunToday: false };
     loadGame();
 
-    let player = { mesh: null, angle: 0, speed: 0, lap: 1, nextCp: 0, capeObj: null, capeData: null, lastKmh: -1, lastLightPos: new THREE.Vector3(1e4, 1e4, 1e4), raceStartTime: 0 };
+    let player = { mesh: null, angle: 0, speed: 0, lap: 1, nextCp: 0, lastKmh: -1, lastLightPos: new THREE.Vector3(1e4, 1e4, 1e4), raceStartTime: 0, nitro: 100, driftScore: 0, hp: 100, isDrifting: false, elimTimer: 0 };
     let bots = [];
-    let cps = [], fullPath = [], keys = {}, joystick = {x:0, y:0, active:false}, gasPressed = false;
+    let cps = [], fullPath = [], keys = {}, joystick = {x:0, y:0, active:false}, nitroPressed = false, driftPressed = false;
     let audioCtx, engineOsc, engineGain;
+    let menuCar = null;
     let shadowNeedsUpdate = true;
+    let nitroSparks = [];
+    let isElimMode = false;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.85;
+    renderer.toneMappingExposure = 0.9; 
     if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.setClearColor(0x000000);
     document.body.appendChild(renderer.domElement);
 
-    scene.add(new THREE.HemisphereLight(0xbcd4ff, 0x445533, 0.15));
-    scene.add(new THREE.AmbientLight(0xffffff, 0.12));
+    const menuScene = new THREE.Scene();
+    const menuCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    const menuRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    elMenuContainer.appendChild(menuRenderer.domElement);
+    menuRenderer.domElement.style.width = '100%'; menuRenderer.domElement.style.height = '100%';
+    menuRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+    menuRenderer.toneMappingExposure = 0.9;
+    if (THREE.sRGBEncoding !== undefined) menuRenderer.outputEncoding = THREE.sRGBEncoding;
 
-    const dirLight = new THREE.DirectionalLight(0xfff2e0, 0.9);
-    dirLight.position.set(30, 60, 30);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x222222, 0.6);
+    hemiLight.position.set(0, 200, 0);
+    scene.add(hemiLight);
+
+    const dirLight = new THREE.DirectionalLight(0xfff2e0, 1.0);
+    dirLight.position.set(50, 100, 50);
     dirLight.castShadow = true;
-    dirLight.shadow.mapSize.set(1024, 1024);
-    dirLight.shadow.camera.near = 0.5;
-    dirLight.shadow.camera.far = 300;
-    dirLight.shadow.camera.left = -150;
-    dirLight.shadow.camera.right = 150;
-    dirLight.shadow.camera.top = 150;
-    dirLight.shadow.camera.bottom = -150;
-    dirLight.shadow.bias = -0.0005;
-    dirLight.shadow.normalBias = 0.05;
+    dirLight.shadow.mapSize.set(2048, 2048);
+    dirLight.shadow.camera.near = 0.5; dirLight.shadow.camera.far = 300;
+    dirLight.shadow.camera.left = -150; dirLight.shadow.camera.right = 150;
+    dirLight.shadow.camera.top = 150; dirLight.shadow.camera.bottom = -150;
+    dirLight.shadow.bias = -0.0005; dirLight.shadow.normalBias = 0.05;
     scene.add(dirLight); scene.add(dirLight.target);
 
-    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.15);
-    fillLight.position.set(-30, 20, -20);
-    fillLight.castShadow = false;
-    scene.add(fillLight);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
+    scene.add(ambientLight);
+
+    const menuHemi = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6); menuScene.add(menuHemi);
+    const menuDir = new THREE.DirectionalLight(0xfff2e0, 1.0); menuDir.position.set(30, 60, 30); menuDir.castShadow = true; menuScene.add(menuDir);
+    const menuAmb = new THREE.AmbientLight(0xffffff, 0.15); menuScene.add(menuAmb);
 
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        if (dirLight.shadow.camera) { dirLight.shadow.camera.updateProjectionMatrix(); }
+        if (dirLight.shadow.camera) dirLight.shadow.camera.updateProjectionMatrix();
+        if (elMenuContainer.clientWidth > 0) {
+            menuCamera.aspect = elMenuContainer.clientWidth / elMenuContainer.clientHeight; menuCamera.updateProjectionMatrix();
+            menuRenderer.setSize(elMenuContainer.clientWidth, elMenuContainer.clientHeight);
+        }
     });
 
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+    // --- UI ФУНКЦИИ ---
     function updateProgressUI() {
         const percent = Math.min(100, (state.coins / state.goal) * 100);
         document.getElementById('debtFill').style.width = percent + '%';
         document.getElementById('debtText').textContent = 'Накоплено: ' + state.coins + ' / ' + state.goal;
         document.getElementById('coinsDisplay').textContent = 'Накоплено: ' + state.coins + ' / ' + state.goal + ' 💰';
+        document.getElementById('garageCoinsDisplay').textContent = '💰 ' + state.coins;
     }
-    function updateCoinsUI() {
-        document.getElementById('shopCoinsDisplay').textContent = '💰 ' + state.coins;
-        const map = { spoiler: ['Spoiler', 50], neon: ['Neon', 100], gold: ['Gold', 150], antenna: ['Antenna', 80], tint: ['Tint', 120], roofRack: ['RoofRack', 120], bodyKit: ['BodyKit', 200], exhaust: ['Exhaust', 90], decals: ['Decals', 70], neon2: ['Neon2', 80], smoked: ['Smoked', 60], chrome: ['Chrome', 130], bigSpoiler: ['BigSpoiler', 250], meme: ['Meme', 999] };
-        for (let k in map) {
-            const btn = document.getElementById('buy' + map[k][0]); if (!btn) continue;
-            if (state.parts[k]) { btn.textContent = 'Куплено'; btn.disabled = true; }
-            else { btn.textContent = String(map[k][1]); btn.disabled = false; }
-        }
-        [['buyCapeRed', 0xff0000, 150], ['buyCapeBlue', 0x0000ff, 150], ['buyCapeGold', 0xffd700, 300], ['buyCapePurple', 0xaa00ff, 200]].forEach(([id, val, price]) => {
-            const btn = document.getElementById(id); if (!btn) return;
-            btn.disabled = false;
-            if (state.parts.cape === 'none') btn.textContent = String(price);
-            else if (state.parts.cape === val && !state.capeTexture) btn.textContent = 'Активен';
-            else btn.textContent = 'Сменить';
-        });
-        refreshCapePreviewUI();
-    }
-    function updateLotteryBadge() {
-        if (canPlayLottery()) { elLotteryStatusBadge.textContent = 'ДОСТУПНО!'; elLotteryStatusBadge.style.color = '#44ff88'; }
-        else { elLotteryStatusBadge.textContent = 'завтра'; elLotteryStatusBadge.style.color = '#888'; }
+    function updateHealthUI() {
+        elHealthFill.style.width = Math.max(0, state.hp) + '%';
+        elHealthText.textContent = 'HP: ' + Math.max(0, Math.floor(state.hp));
+        if (state.hp < 30) elHealthFill.style.background = '#ff0000';
+        else if (state.hp < 60) elHealthFill.style.background = '#ffaa00';
+        else elHealthFill.style.background = '#44ff88';
     }
     function updateCamLabel() {
         const lbl = document.getElementById('camModeLabel');
@@ -361,35 +419,27 @@ window.onload = function() {
         m.style.background = state.diff === 'med' ? '#ffcc00' : ''; m.style.color = state.diff === 'med' ? '#000' : '#ffcc00';
         h.style.background = state.diff === 'hard' ? '#ff3333' : ''; h.style.color = state.diff === 'hard' ? '#000' : '#ff3333';
     }
-    function refreshCapePreviewUI() {
-        const img = document.getElementById('capePreviewImg'), btn = document.getElementById('clearCapeImgBtn');
-        if (state.capeTexture) { img.src = state.capeTexture; img.style.display = 'block'; btn.style.display = 'flex'; }
-        else { img.style.display = 'none'; btn.style.display = 'none'; }
+    function updateModeUI() {
+        const mn = document.getElementById('modeNormal'), me = document.getElementById('modeElim');
+        mn.style.background = state.mode === 'normal' ? '#44ff88' : ''; mn.style.color = state.mode === 'normal' ? '#000' : '#44ff88';
+        me.style.background = state.mode === 'elim' ? '#ff3333' : ''; me.style.color = state.mode === 'elim' ? '#000' : '#ff3333';
     }
-
     function updateLocationsMenu() {
         const container = document.getElementById('racingLocations');
         if (!container) return;
-        const locs = [
-            ['track', 'Трасса'], ['desert', 'Пустыня'], ['snow', 'Снег'],
-            ['city', 'Город'], ['lava', 'Лава'], ['space', 'Космос']
-        ];
+        const locs = [['track', 'Трасса'], ['desert', 'Пустыня'], ['snow', 'Снег'], ['city', 'Город'], ['lava', 'Лава'], ['space', 'Космос']];
         container.innerHTML = '';
         locs.forEach(([key, label]) => {
             const btn = document.createElement('button');
-            btn.className = 'btn';
-            btn.textContent = label;
+            btn.className = 'btn'; btn.textContent = label;
             const active = state.currentLocation === key;
-            btn.style.borderColor = active ? '#ffcc00' : '#555';
-            btn.style.color = active ? '#000' : '#fff';
-            btn.style.background = active ? '#ffcc00' : 'rgba(255,255,255,0.05)';
-            btn.onclick = () => { state.currentLocation = key; updateLocationsMenu(); };
+            btn.style.borderColor = active ? '#ffcc00' : '#444'; btn.style.color = active ? '#000' : '#fff'; btn.style.background = active ? '#ffcc00' : 'rgba(255,255,255,0.05)';
+            btn.onclick = () => { state.currentLocation = key; updateLocationsMenu(); loadMenuPreview(); };
             container.appendChild(btn);
         });
     }
-
-    function renderShop() {
-        updateCoinsUI();
+    function renderGarage() {
+        updateProgressUI();
         const colors = [0xff3333, 0x33ff66, 0x3366ff, 0xffcc00, 0xff00ff, 0xffffff];
         const cp = document.getElementById('colorPicker'); cp.innerHTML = '';
         colors.forEach(c => {
@@ -399,148 +449,60 @@ window.onload = function() {
             btn.onclick = () => { 
                 if (state.coins >= 20) { 
                     state.coins -= 20; state.carColor = c; saveGame();
-                    updateCoinsUI(); updateProgressUI(); 
-                    renderShop();
+                    updateProgressUI(); renderGarage(); loadMenuPreview();
                 } else alert('Мало монет!'); 
             };
             cp.appendChild(btn);
         });
-    }
+        
+        const cars = [['carClassic', 'classic', 0], ['carSport', 'sport', 2000], ['carSUV', 'suv', 3000]];
+        cars.forEach(([id, key, price]) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            if (key === 'classic') { btn.textContent = 'Бесплатно'; btn.disabled = true; return; }
+            if (state.parts[key]) { btn.textContent = 'Куплено'; btn.disabled = true; } 
+            else { btn.textContent = String(price); btn.disabled = false; }
+        });
 
-    // ЛОТЕРЕЯ
-    const LOTTERY_COLS = 3, LOTTERY_ROWS = 2, LOTTERY_CELLS = 6;
-    const COIN_CHANCE = 0.20;
-    const LOTTERY_W = 480, LOTTERY_H = 360;
-    const CELL_W = LOTTERY_W / LOTTERY_COLS, CELL_H = LOTTERY_H / LOTTERY_ROWS;
-    const OPEN_THRESHOLD = 0.35;
-    let lotteryState = { prizes: [], revealed: [], done: false };
-    const lcCanvas = document.getElementById('lotteryCanvas');
-    const lcMsg = document.getElementById('lotteryMsg');
-    const lcCtx = lcCanvas.getContext('2d', { willReadFrequently: true });
-    const prizeCanvas = document.createElement('canvas');
-    const prizeCtx = prizeCanvas.getContext('2d');
-    let lcDrawing = false, lcLastPos = null;
+        const skins = [['skinPolice', 'police', 500], ['skinTaxi', 'taxi', 500], ['skinRally', 'rally', 800], ['skinCamo', 'camo', 1000]];
+        skins.forEach(([id, key, price]) => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            if (state.currentSkin === key) { btn.textContent = 'Активен'; btn.disabled = true; }
+            else if (state.parts[key]) { btn.textContent = 'Надеть'; btn.disabled = false; }
+            else { btn.textContent = String(price); btn.disabled = false; }
+        });
 
-    function lotteryTodayKey() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
-    function canPlayLottery() { return state.lotteryLastDate !== lotteryTodayKey(); }
-    function generatePrizes() { const arr = []; for (let i = 0; i < LOTTERY_CELLS; i++) arr.push(Math.random() < COIN_CHANCE); return arr; }
-    function drawPrizeLayer() {
-        prizeCtx.clearRect(0, 0, LOTTERY_W, LOTTERY_H);
-        for (let r = 0; r < LOTTERY_ROWS; r++) for (let c = 0; c < LOTTERY_COLS; c++) {
-            const idx = r * LOTTERY_COLS + c, x = c * CELL_W, y = r * CELL_H;
-            prizeCtx.fillStyle = lotteryState.prizes[idx] ? '#0a3a1a' : '#3a0a0a';
-            prizeCtx.fillRect(x + 3, y + 3, CELL_W - 6, CELL_H - 6);
-            prizeCtx.font = 'bold 64px sans-serif'; prizeCtx.textAlign = 'center'; prizeCtx.textBaseline = 'middle';
-            prizeCtx.fillStyle = lotteryState.prizes[idx] ? '#44ff88' : '#ff5555';
-            prizeCtx.fillText(lotteryState.prizes[idx] ? '💰' : '❌', x + CELL_W/2, y + CELL_H/2);
+        // Украшения (только из сундуков)
+        const decorList = document.getElementById('garageDecorList');
+        decorList.innerHTML = '';
+        const decorItems = { spoiler: 'Спойлер', neon: 'Неон', gold: 'Золотые диски', antenna: 'Антенна', tint: 'Тонировка', roofRack: 'Багажник', bodyKit: 'Обвес', exhaust: 'Выхлоп', decals: 'Наклейки', neon2: 'Второй неон', smoked: 'Тёмные фары', chrome: 'Хром-диски', bigSpoiler: 'Огромный спойлер' };
+        let hasDecor = false;
+        for (let k in decorItems) {
+            if (state.parts[k]) {
+                hasDecor = true;
+                const div = document.createElement('div');
+                div.className = 'shop-item';
+                div.innerHTML = `<span>${decorItems[k]}</span><span style="color:#44ff88;">✅ Установлено</span>`;
+                decorList.appendChild(div);
+            }
         }
-    }
-    function redrawLottery() {
-        lcCtx.clearRect(0, 0, LOTTERY_W, LOTTERY_H);
-        lcCtx.globalCompositeOperation = 'source-over';
-        lcCtx.drawImage(prizeCanvas, 0, 0);
-        lcCtx.fillStyle = '#888'; lcCtx.fillRect(0, 0, LOTTERY_W, LOTTERY_H);
-        lcCtx.fillStyle = '#555'; lcCtx.font = 'bold 24px sans-serif'; lcCtx.textAlign = 'center'; lcCtx.textBaseline = 'middle';
-        for (let r = 0; r < LOTTERY_ROWS; r++) for (let c = 0; c < LOTTERY_COLS; c++) {
-            lcCtx.fillText('СТЕРЕТЬ', c * CELL_W + CELL_W/2, r * CELL_H + CELL_H/2);
-        }
-        for (let idx = 0; idx < LOTTERY_CELLS; idx++) if (lotteryState.revealed[idx]) drawCheckmark(idx);
-    }
-    function drawCheckmark(idx) {
-        const col = idx % LOTTERY_COLS, row = Math.floor(idx / LOTTERY_COLS), x = col * CELL_W, y = row * CELL_H;
-        lcCtx.save(); lcCtx.strokeStyle = '#ffcc00'; lcCtx.lineWidth = 4;
-        lcCtx.beginPath(); lcCtx.moveTo(x + 8, y + 8); lcCtx.lineTo(x + 20, y + 20); lcCtx.lineTo(x + 40, y - 8); lcCtx.stroke(); lcCtx.restore();
-    }
-    function updateLotteryMsgProgress() {
-        if (lotteryState.done) return;
-        const opened = lotteryState.revealed.filter(Boolean).length;
-        lcMsg.textContent = 'Открыто: ' + opened + '/6. Сотри все ячейки!'; lcMsg.className = 'lottery-msg';
-    }
-    function openCell(idx) {
-        if (lotteryState.revealed[idx] || lotteryState.done) return;
-        lotteryState.revealed[idx] = true; drawCheckmark(idx); updateLotteryMsgProgress();
-        if (lotteryState.revealed.every(v => v)) checkLotteryResult();
-    }
-    function checkLotteryResult() {
-        if (lotteryState.done) return;
-        lotteryState.done = true;
-        const wins = lotteryState.prizes.filter(Boolean).length;
-        if (wins === 3) { state.coins += 500; lcMsg.textContent = '🎉 ПОБЕДА! Ровно 3 монеты → +500 монет!'; lcMsg.className = 'lottery-msg win'; }
-        else { lcMsg.textContent = 'Монет: ' + wins + ' из 6. Выигрыш только при ровно 3. Завтра ещё!'; lcMsg.className = 'lottery-msg lose'; }
-        state.lotteryLastDate = lotteryTodayKey();
-        saveGame(); updateProgressUI(); updateCoinsUI(); updateLotteryBadge();
-    }
-    function resetLottery() {
-        lcCanvas.width = LOTTERY_W; lcCanvas.height = LOTTERY_H;
-        prizeCanvas.width = LOTTERY_W; prizeCanvas.height = LOTTERY_H;
-        lotteryState.prizes = generatePrizes(); lotteryState.revealed = new Array(LOTTERY_CELLS).fill(false); lotteryState.done = false;
-        lcDrawing = false; lcLastPos = null;
-        drawPrizeLayer(); redrawLottery();
-        lcMsg.textContent = 'Сотри все 6 ячеек!'; lcMsg.className = 'lottery-msg';
-    }
-    function openLottery() { elMenuOverlay.classList.add('hidden'); elLotteryOverlay.classList.remove('hidden'); resetLottery(); }
-    function getCanvasPoint(clientX, clientY) {
-        const rect = lcCanvas.getBoundingClientRect();
-        return { x: (clientX - rect.left) * (LOTTERY_W / rect.width), y: (clientY - rect.top) * (LOTTERY_H / rect.height) };
-    }
-    function eraseAt(x, y) {
-        const radius = Math.max(32, LOTTERY_W / 14);
-        lcCtx.save(); lcCtx.globalCompositeOperation = 'destination-out';
-        lcCtx.lineCap = 'round'; lcCtx.lineJoin = 'round'; lcCtx.lineWidth = radius * 2;
-        if (lcLastPos) { lcCtx.beginPath(); lcCtx.moveTo(lcLastPos.x, lcLastPos.y); lcCtx.lineTo(x, y); lcCtx.stroke(); }
-        lcCtx.beginPath(); lcCtx.arc(x, y, radius, 0, Math.PI * 2); lcCtx.fill(); lcCtx.restore();
-    }
-    function getCellOf(x, y) {
-        const col = Math.floor(x / CELL_W), row = Math.floor(y / CELL_H);
-        if (col < 0 || col >= LOTTERY_COLS || row < 0 || row >= LOTTERY_ROWS) return -1;
-        return row * LOTTERY_COLS + col;
-    }
-    function checkCellProgress(idx) {
-        if (idx < 0 || lotteryState.revealed[idx] || lotteryState.done) return;
-        const col = idx % LOTTERY_COLS, row = Math.floor(idx / LOTTERY_COLS);
-        const sx = Math.max(0, Math.floor(col * CELL_W) + 2), sy = Math.max(0, Math.floor(row * CELL_H) + 2);
-        const sw = Math.min(LOTTERY_W - sx, Math.ceil(CELL_W) - 4), sh = Math.min(LOTTERY_H - sy, Math.ceil(CELL_H) - 4);
-        const imgData = lcCtx.getImageData(sx, sy, sw, sh).data;
-        let cleared = 0;
-        for (let i = 3; i < imgData.length; i += 4) if (imgData[i] < 128) cleared++;
-        if (cleared / (imgData.length / 4) >= OPEN_THRESHOLD) openCell(idx);
-    }
-    lcCanvas.addEventListener('pointerdown', e => {
-        if (lotteryState.done) return;
-        e.preventDefault(); lcDrawing = true; lcLastPos = null;
-        const p = getCanvasPoint(e.clientX, e.clientY);
-        eraseAt(p.x, p.y);
-        const idx = getCellOf(p.x, p.y);
-        if (idx >= 0) checkCellProgress(idx);
-    });
-    window.addEventListener('pointermove', e => {
-        if (!lcDrawing || lotteryState.done) return;
-        const rect = lcCanvas.getBoundingClientRect();
-        if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) return;
-        e.preventDefault();
-        const p = getCanvasPoint(e.clientX, e.clientY);
-        eraseAt(p.x, p.y);
-        const idx = getCellOf(p.x, p.y);
-        if (idx >= 0) checkCellProgress(idx);
-        lcLastPos = p;
-    });
-    window.addEventListener('pointerup', () => { lcDrawing = false; lcLastPos = null; });
-    window.addEventListener('pointercancel', () => { lcDrawing = false; lcLastPos = null; });
+        if (!hasDecor) decorList.innerHTML = '<div style="color:#888; font-size:12px;">Пока нет украшений. Открывай сундуки!</div>';
 
+        const img = document.getElementById('capePreviewImg'), btn = document.getElementById('clearCapeImgBtn');
+        if (state.capeTexture) { img.src = state.capeTexture; img.style.display = 'block'; btn.style.display = 'flex'; }
+        else { img.style.display = 'none'; btn.style.display = 'none'; }
+    }
+
+    // --- МУЛЬТИПЛЕЕР ---
     let mpPeer = null, mpChannel = null, mpRole = null, remotePlayer = null, mpActive = false, mpSendInterval = null;
     function mpShowStep2() { document.getElementById('mpStep1').style.display = 'none'; document.getElementById('mpStep2').style.display = 'block'; }
     function mpSetStatus(text, cls) { const el = document.getElementById('mpStatus'); el.textContent = text; el.className = 'mp-status' + (cls ? ' ' + cls : ''); }
     function mpReset() {
-        mpPeer = null; mpChannel = null; mpRole = null;
-        mpSetStatus('Инициализация...');
-        document.getElementById('mpHostArea').style.display = 'none';
-        document.getElementById('mpClientArea').style.display = 'none';
-        document.getElementById('mpOfferOut').value = '';
-        document.getElementById('mpAnswerIn').value = '';
-        document.getElementById('mpAnswerOut').value = '';
-        document.getElementById('mpOfferInput').value = '';
-        document.getElementById('mpStep1').style.display = 'block';
-        document.getElementById('mpStep2').style.display = 'none';
+        mpPeer = null; mpChannel = null; mpRole = null; mpSetStatus('Инициализация...');
+        document.getElementById('mpHostArea').style.display = 'none'; document.getElementById('mpClientArea').style.display = 'none';
+        document.getElementById('mpOfferOut').value = ''; document.getElementById('mpAnswerIn').value = ''; document.getElementById('mpAnswerOut').value = ''; document.getElementById('mpOfferInput').value = '';
+        document.getElementById('mpStep1').style.display = 'block'; document.getElementById('mpStep2').style.display = 'none';
     }
     function mpCreatePeer() {
         const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
@@ -552,8 +514,7 @@ window.onload = function() {
         if (pc.iceGatheringState === 'complete') return;
         await new Promise(res => {
             const check = () => { if (pc.iceGatheringState === 'complete') { pc.removeEventListener('icegatheringstatechange', check); res(); } };
-            pc.addEventListener('icegatheringstatechange', check);
-            setTimeout(res, 3000);
+            pc.addEventListener('icegatheringstatechange', check); setTimeout(res, 3000);
         });
     }
     function mpSetupChannel(ch) {
@@ -564,7 +525,7 @@ window.onload = function() {
     }
     function mpSpawnRemote() {
         if (remotePlayer && remotePlayer.mesh) scene.remove(remotePlayer.mesh);
-        const carData = createCar(0x3366ff, { spoiler: false, neon: false, gold: false, antenna: false, tint: false, cape: 'none', meme: false, roofRack: false, bodyKit: false, exhaust: false, decals: false, neon2: false, smoked: false, chrome: false, bigSpoiler: false });
+        const carData = createCar(0x3366ff, { spoiler: false, neon: false, gold: false, antenna: false, tint: false, roofRack: false, bodyKit: false, exhaust: false, decals: false, neon2: false, smoked: false, chrome: false, bigSpoiler: false });
         scene.add(carData.group);
         remotePlayer = { mesh: carData.group, targetX: cps[0] ? cps[0].x - 5 : 0, targetZ: cps[0] ? cps[0].z : 0, targetAngle: 0, targetSpeed: 0, lastRecv: performance.now() };
     }
@@ -581,123 +542,77 @@ window.onload = function() {
         if (d.t === 's') { remotePlayer.targetX = d.x; remotePlayer.targetZ = d.z; remotePlayer.targetAngle = d.a; remotePlayer.targetSpeed = d.v; remotePlayer.lastRecv = performance.now(); }
     }
 
-    function createCape(color, textureDataUrl) {
-        const segX = 6, segY = 8, w = 2.0, h = 1.8;
-        const geo = new THREE.PlaneGeometry(w, h, segX, segY);
-        let mat;
-        if (textureDataUrl) {
-            const tex = new THREE.TextureLoader().load(textureDataUrl);
-            if (THREE.sRGBEncoding !== undefined) tex.encoding = THREE.sRGBEncoding;
-            mat = new THREE.MeshLambertMaterial({ map: tex, side: THREE.DoubleSide, transparent: true, opacity: 0.95 });
-        } else {
-            mat = new THREE.MeshLambertMaterial({ color, side: THREE.DoubleSide, transparent: true, opacity: 0.92 });
-        }
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.position.set(0, 1.0, -2.5); mesh.castShadow = true;
-        const arr = geo.attributes.position.array;
-        const count = geo.attributes.position.count;
-        const prevArr = new Float32Array(arr.length);
-        const restArr = new Float32Array(arr.length);
-        const halfH = h / 2;
-        for (let i = 0; i < count; i++) arr[i*3+1] -= halfH;
-        restArr.set(arr);
-        const pinned = new Uint8Array(count);
-        for (let i = 0; i < count; i++) if (arr[i*3+1] > -0.05) pinned[i] = 1;
-        for (let i = 0; i < count; i++) if (!pinned[i]) { const d = -arr[i*3+1]; arr[i*3+2] -= d * 0.35; }
-        prevArr.set(arr);
-        const cols = segX + 1, rows = segY + 1;
-        const cList = [], lenList = [];
-        const getDist = (a, b) => { const dx = restArr[a*3]-restArr[b*3], dy = restArr[a*3+1]-restArr[b*3+1], dz = restArr[a*3+2]-restArr[b*3+2]; return Math.sqrt(dx*dx+dy*dy+dz*dz); };
-        for (let r = 0; r < rows; r++) for (let c = 0; c < cols-1; c++) { const a = r*cols+c, b = r*cols+c+1; cList.push(a, b); lenList.push(getDist(a, b)); }
-        for (let r = 0; r < rows-1; r++) for (let c = 0; c < cols; c++) { const a = r*cols+c, b = (r+1)*cols+c; cList.push(a, b); lenList.push(getDist(a, b)); }
-        for (let r = 0; r < rows-1; r++) for (let c = 0; c < cols-1; c++) { const a = r*cols+c, b = (r+1)*cols+c+1; cList.push(a, b); lenList.push(getDist(a, b)); const c2 = r*cols+c+1, d2 = (r+1)*cols+c; cList.push(c2, d2); lenList.push(getDist(c2, d2)); }
-        return { mesh, arr, prevArr, pinned, count, constraints: new Int32Array(cList), lengths: new Float32Array(lenList) };
-    }
-    function stepCape(cape, dt, forceX, forceY, forceZ) {
-        if (!cape) return;
-        dt = Math.min(dt, 0.033); const dt2 = dt * dt;
-        const { arr, prevArr, pinned, count, constraints, lengths } = cape;
-        const damping = Math.pow(0.97, dt * 60), totalY = -14 + forceY;
-        for (let i = 0; i < count; i++) {
-            if (pinned[i]) continue;
-            const i3 = i * 3;
-            const x = arr[i3], y = arr[i3+1], z = arr[i3+2];
-            const px = prevArr[i3], py = prevArr[i3+1], pz = prevArr[i3+2];
-            const vx = (x - px) * damping, vy = (y - py) * damping, vz = (z - pz) * damping;
-            prevArr[i3] = x; prevArr[i3+1] = y; prevArr[i3+2] = z;
-            arr[i3] = x + vx + forceX * dt2; arr[i3+1] = y + vy + totalY * dt2; arr[i3+2] = z + vz + forceZ * dt2;
-        }
-        for (let it = 0; it < 2; it++) for (let k = 0; k < constraints.length; k += 2) {
-            const ia = constraints[k], ib = constraints[k+1], ia3 = ia*3, ib3 = ib*3;
-            const dx = arr[ib3]-arr[ia3], dy = arr[ib3+1]-arr[ia3+1], dz = arr[ib3+2]-arr[ia3+2];
-            const distSq = dx*dx+dy*dy+dz*dz;
-            if (distSq < 1e-6) continue;
-            const dist = Math.sqrt(distSq), target = lengths[k >> 1];
-            const diff = (dist - target) / dist * 0.5;
-            const ax = dx * diff, ay = dy * diff, az = dz * diff;
-            const aP = pinned[ia], bP = pinned[ib];
-            if (!aP && !bP) { arr[ia3]+=ax; arr[ia3+1]+=ay; arr[ia3+2]+=az; arr[ib3]-=ax; arr[ib3+1]-=ay; arr[ib3+2]-=az; }
-            else if (!aP) { arr[ia3]+=ax*2; arr[ia3+1]+=ay*2; arr[ia3+2]+=az*2; }
-            else if (!bP) { arr[ib3]-=ax*2; arr[ib3+1]-=ay*2; arr[ib3+2]-=az*2; }
-        }
-        cape.mesh.geometry.attributes.position.needsUpdate = true;
-        cape.mesh.geometry.computeVertexNormals();
-    }
-
+    // --- МОДЕЛИ ---
     function createCar(color, parts) {
         const group = new THREE.Group();
-        let bodyMat = parts.meme ? new THREE.MeshLambertMaterial({ map: createMemeTexture() }) : new THREE.MeshLambertMaterial({ color: color });
-        const glassMat = new THREE.MeshLambertMaterial({ color: 0x1a2a3a, transparent: true, opacity: 0.8 });
-        const body = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.6, 5), bodyMat); body.position.y = 0.7; group.add(body);
-        const sL = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.5, 4.6), bodyMat); sL.position.set(-1.26, 0.7, 0); group.add(sL);
-        const sR = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.5, 4.6), bodyMat); sR.position.set(1.26, 0.7, 0); group.add(sR);
-        const hood = new THREE.Mesh(new THREE.BoxGeometry(2.35, 0.15, 1.6), bodyMat); hood.position.set(0, 1.05, 1.6); group.add(hood);
-        const roof = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.12, 2.0), bodyMat); roof.position.set(0, 1.55, -0.2); group.add(roof);
-        const ws = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.5, 0.08), glassMat); ws.position.set(0, 1.35, 0.85); ws.rotation.x = -0.35; group.add(ws);
-        const rg = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.45, 0.08), glassMat); rg.position.set(0, 1.35, -1.25); rg.rotation.x = 0.35; group.add(rg);
-        const sgL = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.4, 1.8), glassMat); sgL.position.set(-0.96, 1.4, -0.2); group.add(sgL);
-        const sgR = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.4, 1.8), glassMat); sgR.position.set(0.96, 1.4, -0.2); group.add(sgR);
+        group.rotation.y = Math.PI; // Нос вперед
+        
+        let bodyMat;
+        if (state.currentSkin !== 'none') {
+            bodyMat = new THREE.MeshStandardMaterial({ map: createSkinTexture(state.currentSkin), roughness: 0.4, metalness: 0.3 });
+        } else {
+            bodyMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.3, metalness: 0.4 });
+        }
+        const glassMat = new THREE.MeshStandardMaterial({ color: 0x1a2a3a, transparent: true, opacity: 0.8, roughness: 0.1, metalness: 0.9 });
+        
+        const scale = state.currentCar === 'suv' ? 1.15 : 1;
+        const carGroup = new THREE.Group();
+        carGroup.scale.set(scale, scale, scale);
+        group.add(carGroup);
+
+        const body = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.6, 5), bodyMat); body.position.y = 0.7; carGroup.add(body);
+        const sL = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.5, 4.6), bodyMat); sL.position.set(-1.26, 0.7, 0); carGroup.add(sL);
+        const sR = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.5, 4.6), bodyMat); sR.position.set(1.26, 0.7, 0); carGroup.add(sR);
+        const hood = new THREE.Mesh(new THREE.BoxGeometry(2.35, 0.15, 1.6), bodyMat); hood.position.set(0, 1.05, 1.6); carGroup.add(hood);
+        const roof = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.12, 2.0), bodyMat); roof.position.set(0, 1.55, -0.2); carGroup.add(roof);
+        const ws = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.5, 0.08), glassMat); ws.position.set(0, 1.35, 0.85); ws.rotation.x = -0.35; carGroup.add(ws);
+        const rg = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.45, 0.08), glassMat); rg.position.set(0, 1.35, -1.25); rg.rotation.x = 0.35; carGroup.add(rg);
+        const sgL = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.4, 1.8), glassMat); sgL.position.set(-0.96, 1.4, -0.2); carGroup.add(sgL);
+        const sgR = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.4, 1.8), glassMat); sgR.position.set(0.96, 1.4, -0.2); carGroup.add(sgR);
+        
         const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 20);
-        const tireMat = new THREE.MeshLambertMaterial({ color: 0x1a1a1a });
+        const tireMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.9 });
         let rimColor = parts.chrome ? 0xffffff : parts.gold ? 0xffcc00 : 0xbbbbbb;
-        const rimMat = new THREE.MeshLambertMaterial({ color: rimColor });
+        const rimMat = new THREE.MeshStandardMaterial({ color: rimColor, metalness: 0.8, roughness: 0.2 });
         [[-1.2, 0.4, 1.5], [1.2, 0.4, 1.5], [-1.2, 0.4, -1.5], [1.2, 0.4, -1.5]].forEach(pos => {
-            const tire = new THREE.Mesh(wheelGeo, tireMat); tire.rotation.z = Math.PI / 2; tire.position.set(pos[0], pos[1], pos[2]); group.add(tire);
-            const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.31, 16), rimMat); rim.rotation.z = Math.PI / 2; rim.position.set(pos[0], pos[1], pos[2]); group.add(rim);
+            const tire = new THREE.Mesh(wheelGeo, tireMat); tire.rotation.z = Math.PI / 2; tire.position.set(pos[0], pos[1], pos[2]); carGroup.add(tire);
+            const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.31, 16), rimMat); rim.rotation.z = Math.PI / 2; rim.position.set(pos[0], pos[1], pos[2]); carGroup.add(rim);
         });
-        const headlightMat = new THREE.MeshLambertMaterial({ color: parts.smoked ? 0x333333 : 0xddeeff });
-        [[-0.85, 2.52], [0.85, 2.52]].forEach(p => { const h = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.15, 0.1), headlightMat); h.position.set(p[0], 0.75, p[1]); group.add(h); });
-        const tlMat = new THREE.MeshLambertMaterial({ color: 0xaa0000 });
-        [[-0.85, -2.52], [0.85, -2.52]].forEach(p => { const t = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.15, 0.1), tlMat); t.position.set(p[0], 0.75, p[1]); group.add(t); });
+        
+        const headlightMat = new THREE.MeshStandardMaterial({ color: parts.smoked ? 0x333333 : 0xddeeff, emissive: parts.smoked ? 0x000000 : 0xaaccff, emissiveIntensity: 0.5 });
+        [[-0.85, 2.52], [0.85, 2.52]].forEach(p => { const h = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.15, 0.1), headlightMat); h.position.set(p[0], 0.75, p[1]); carGroup.add(h); });
+        const tlMat = new THREE.MeshStandardMaterial({ color: 0xaa0000, emissive: 0x550000 });
+        [[-0.85, -2.52], [0.85, -2.52]].forEach(p => { const t = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.15, 0.1), tlMat); t.position.set(p[0], 0.75, p[1]); carGroup.add(t); });
+        
         if (parts.bigSpoiler) {
-            const spMat = new THREE.MeshLambertMaterial({ color: 0x181818 });
-            const sp = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.15, 0.9), spMat); sp.position.set(0, 1.9, -2.4); group.add(sp);
-            [[-1.0], [1.0]].forEach(([x]) => { const leg = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.9, 0.3), spMat); leg.position.set(x, 1.45, -2.4); group.add(leg); });
+            const spMat = new THREE.MeshStandardMaterial({ color: 0x181818, roughness: 0.8 });
+            const sp = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.15, 0.9), spMat); sp.position.set(0, 1.9, -2.4); carGroup.add(sp);
+            [[-1.0], [1.0]].forEach(([x]) => { const leg = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.9, 0.3), spMat); leg.position.set(x, 1.45, -2.4); carGroup.add(leg); });
         } else if (parts.spoiler) {
-            const spMat = new THREE.MeshLambertMaterial({ color: 0x181818 });
-            const sp = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.08, 0.6), spMat); sp.position.set(0, 1.5, -2.3); group.add(sp);
-            [[-0.9], [0.9]].forEach(([x]) => { const leg = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.35, 0.3), spMat); leg.position.set(x, 1.32, -2.3); group.add(leg); });
+            const spMat = new THREE.MeshStandardMaterial({ color: 0x181818, roughness: 0.8 });
+            const sp = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.08, 0.6), spMat); sp.position.set(0, 1.5, -2.3); carGroup.add(sp);
+            [[-0.9], [0.9]].forEach(([x]) => { const leg = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.35, 0.3), spMat); leg.position.set(x, 1.32, -2.3); carGroup.add(leg); });
         }
         if (parts.antenna) {
-            const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2, 8), new THREE.MeshLambertMaterial({ color: 0xdddddd })); ant.position.set(0, 2, -1.5); group.add(ant);
-            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 8), new THREE.MeshLambertMaterial({ color: 0xcc0000 })); ball.position.set(0, 3, -1.5); group.add(ball);
+            const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2, 8), new THREE.MeshLambertMaterial({ color: 0xdddddd })); ant.position.set(0, 2, -1.5); carGroup.add(ant);
+            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 8), new THREE.MeshStandardMaterial({ color: 0xcc0000, emissive: 0x330000 })); ball.position.set(0, 3, -1.5); carGroup.add(ball);
         }
         if (parts.roofRack) {
-            const rackMat = new THREE.MeshLambertMaterial({ color: 0x444444 });
-            [[-0.7], [0.7]].forEach(([x]) => { const bar = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 2.5), rackMat); bar.position.set(x, 1.72, 0); group.add(bar); });
-            for (let i = -1; i <= 1; i++) { const bar = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.08, 0.12), rackMat); bar.position.set(0, 1.72, i * 0.9); group.add(bar); }
+            const rackMat = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.9 });
+            [[-0.7], [0.7]].forEach(([x]) => { const bar = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 2.5), rackMat); bar.position.set(x, 1.72, 0); carGroup.add(bar); });
+            for (let i = -1; i <= 1; i++) { const bar = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.08, 0.12), rackMat); bar.position.set(0, 1.72, i * 0.9); carGroup.add(bar); }
         }
         if (parts.bodyKit) {
-            const kitMat = new THREE.MeshLambertMaterial({ color: 0x222222 });
-            const frontLip = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.12, 0.4), kitMat); frontLip.position.set(0, 0.42, 2.65); group.add(frontLip);
-            const rearLip = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.12, 0.4), kitMat); rearLip.position.set(0, 0.42, -2.65); group.add(rearLip);
-            [[-1.32], [1.32]].forEach(([x]) => { const skirt = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 3.5), kitMat); skirt.position.set(x, 0.42, 0); group.add(skirt); });
+            const kitMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.7 });
+            const frontLip = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.12, 0.4), kitMat); frontLip.position.set(0, 0.42, 2.65); carGroup.add(frontLip);
+            const rearLip = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.12, 0.4), kitMat); rearLip.position.set(0, 0.42, -2.65); carGroup.add(rearLip);
+            [[-1.32], [1.32]].forEach(([x]) => { const skirt = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 3.5), kitMat); skirt.position.set(x, 0.42, 0); carGroup.add(skirt); });
         }
         if (parts.exhaust) {
-            const exMat = new THREE.MeshLambertMaterial({ color: 0xaaaaaa });
+            const exMat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.8, roughness: 0.3 });
             [[-0.6], [0.6]].forEach(([x]) => {
-                const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.3, 12), exMat); pipe.rotation.x = Math.PI / 2; pipe.position.set(x, 0.45, -2.6); group.add(pipe);
-                const glow = new THREE.PointLight(0xff4400, 0.4, 3); glow.position.set(x, 0.45, -2.7); group.add(glow);
+                const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.3, 12), exMat); pipe.rotation.x = Math.PI / 2; pipe.position.set(x, 0.45, -2.6); carGroup.add(pipe);
+                const glow = new THREE.PointLight(0xff4400, 0.4, 3); glow.position.set(x, 0.45, -2.7); carGroup.add(glow);
             });
         }
         if (parts.decals) {
@@ -705,27 +620,21 @@ window.onload = function() {
             for (let i = 0; i < 3; i++) {
                 const d = new THREE.Mesh(new THREE.PlaneGeometry(0.6 + Math.random() * 0.5, 0.3 + Math.random() * 0.4), new THREE.MeshBasicMaterial({ color: decalColors[i % decalColors.length], side: THREE.DoubleSide, transparent: true, opacity: 0.9 }));
                 const side = Math.random() < 0.5 ? -1 : 1;
-                d.position.set(side * 1.27, 0.6 + Math.random() * 0.4, -1.5 + i * 1.2); d.rotation.y = side * Math.PI / 2; d.rotation.z = Math.random() * 0.3 - 0.15; group.add(d);
+                d.position.set(side * 1.27, 0.6 + Math.random() * 0.4, -1.5 + i * 1.2); d.rotation.y = side * Math.PI / 2; d.rotation.z = Math.random() * 0.3 - 0.15; carGroup.add(d);
             }
         }
-        let capeObj = null, capeData = null;
-        if (parts.cape !== 'none' || state.capeTexture) {
-            const capeColor = parts.cape !== 'none' ? parts.cape : 0xffffff;
-            capeData = createCape(capeColor, state.capeTexture);
-            capeObj = capeData.mesh; group.add(capeObj);
-        }
         if (parts.neon) {
-            const n = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.04, 5.1), new THREE.MeshBasicMaterial({ color: 0xff00ff })); n.position.y = 0.3; group.add(n);
-            const l = new THREE.PointLight(0xff00ff, 1.2, 22); l.position.set(0, 0.5, 0); group.add(l);
+            const n = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.04, 5.1), new THREE.MeshBasicMaterial({ color: 0xff00ff })); n.position.y = 0.3; carGroup.add(n);
+            const l = new THREE.PointLight(0xff00ff, 1.2, 22); l.position.set(0, 0.5, 0); carGroup.add(l);
         }
         if (parts.neon2) {
-            const n2 = new THREE.Mesh(new THREE.BoxGeometry(2.7, 0.04, 5.2), new THREE.MeshBasicMaterial({ color: 0x00ffcc })); n2.position.y = 0.25; group.add(n2);
-            const l2 = new THREE.PointLight(0x00ffcc, 1.2, 22); l2.position.set(0, 0.3, 0); group.add(l2);
+            const n2 = new THREE.Mesh(new THREE.BoxGeometry(2.7, 0.04, 5.2), new THREE.MeshBasicMaterial({ color: 0x00ffcc })); n2.position.y = 0.25; carGroup.add(n2);
+            const l2 = new THREE.PointLight(0x00ffcc, 1.2, 22); l2.position.set(0, 0.3, 0); carGroup.add(l2);
         }
         group.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-        const fakeShadow = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 5.4), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35, depthWrite: false }));
+        const fakeShadow = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 5.4), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3, depthWrite: false }));
         fakeShadow.rotation.x = -Math.PI / 2; fakeShadow.position.y = 0.05; group.add(fakeShadow);
-        return { group, capeObj, capeData };
+        return { group };
     }
 
     function createTrackPath(type) {
@@ -746,44 +655,75 @@ window.onload = function() {
     function addDecorations(targetScene, type) {
         const addMesh = (geo, mat, x, y, z, ry = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.y = ry; m.castShadow = true; m.receiveShadow = true; targetScene.add(m); return m; };
         const ringPos = (minR, maxR) => { const a = Math.random() * Math.PI * 2, r = minR + Math.random() * (maxR - minR); return { x: Math.cos(a) * r, z: Math.sin(a) * r }; };
+
         if (type === 'track') {
             const trunkMat = new THREE.MeshLambertMaterial({ color: 0x5a3a1a });
-            const leafMat = new THREE.MeshLambertMaterial({ color: 0x2a9a3a, flatShading: true });
+            const leafMat = new THREE.MeshStandardMaterial({ color: 0x2a9a3a, roughness: 0.8, flatShading: true });
             for (let i = 0; i < 60; i++) {
-                const p = ringPos(60, 140); const tree = new THREE.Group(); const h = 6 + Math.random() * 6;
-                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, h * 0.4, 5), trunkMat); trunk.position.y = h * 0.2; tree.add(trunk);
-                const leaves = new THREE.Mesh(new THREE.ConeGeometry(2.5, h * 0.8, 6), leafMat); leaves.position.y = h * 0.6; tree.add(leaves);
-                tree.position.set(p.x, 0, p.z); targetScene.add(tree);
+                const p = ringPos(60, 140);
+                const tree = new THREE.Group();
+                const h = 6 + Math.random() * 6;
+                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, h * 0.4, 5), trunkMat);
+                trunk.position.y = h * 0.2; tree.add(trunk);
+                const leaves = new THREE.Mesh(new THREE.ConeGeometry(2.5, h * 0.8, 6), leafMat);
+                leaves.position.y = h * 0.6; tree.add(leaves);
+                tree.position.set(p.x, 0, p.z);
+                targetScene.add(tree);
             }
-        } else if (type === 'desert') {
-            const pyrMat = new THREE.MeshLambertMaterial({ color: 0xd4a750, flatShading: true });
+            const rockMat = new THREE.MeshStandardMaterial({ color: 0x777777, roughness: 0.9, flatShading: true });
+            const bushMat = new THREE.MeshStandardMaterial({ color: 0x3a9a3a, roughness: 0.8, flatShading: true });
+            for (let i = 0; i < 25; i++) { const p = ringPos(60, 120), s = 0.5 + Math.random() * 1.5; addMesh(new THREE.DodecahedronGeometry(s, 0), rockMat, p.x, s * 0.5, p.z, Math.random() * Math.PI); }
+            for (let i = 0; i < 30; i++) { const p = ringPos(60, 130), s = 1 + Math.random() * 1.5; addMesh(new THREE.IcosahedronGeometry(s, 0), bushMat, p.x, s * 0.5, p.z); }
+        }
+        else if (type === 'desert') {
+            const pyrMat = new THREE.MeshStandardMaterial({ color: 0xd4a750, roughness: 0.9, flatShading: true });
             for (let i = 0; i < 6; i++) { const p = ringPos(90, 180), size = 12 + Math.random() * 20, h = size * (1.2 + Math.random() * 0.5); addMesh(new THREE.ConeGeometry(size, h, 4), pyrMat, p.x, h / 2, p.z, Math.random() * Math.PI); }
-        } else if (type === 'snow') {
+            const cacMat = new THREE.MeshStandardMaterial({ color: 0x3a7a3a, roughness: 0.8 });
+            for (let i = 0; i < 25; i++) { const p = ringPos(65, 160), g = new THREE.Group(), h = 3 + Math.random() * 2; const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, h, 6), cacMat); trunk.position.y = h / 2; g.add(trunk); g.position.set(p.x, 0, p.z); targetScene.add(g); }
+            const rockMat = new THREE.MeshStandardMaterial({ color: 0x8b6f47, roughness: 0.9, flatShading: true });
+            for (let i = 0; i < 30; i++) { const p = ringPos(60, 200), s = 0.8 + Math.random() * 3; addMesh(new THREE.DodecahedronGeometry(s, 0), rockMat, p.x, s * 0.4, p.z, Math.random() * Math.PI); }
+        }
+        else if (type === 'snow') {
             const trunkMat = new THREE.MeshLambertMaterial({ color: 0x4a2a18 });
-            const greenMat = new THREE.MeshLambertMaterial({ color: 0x1a4a2a, flatShading: true });
-            const snowMat = new THREE.MeshLambertMaterial({ color: 0xf8fcff });
+            const greenMat = new THREE.MeshStandardMaterial({ color: 0x1a4a2a, roughness: 0.8, flatShading: true });
+            const snowMat = new THREE.MeshStandardMaterial({ color: 0xf8fcff, roughness: 0.5 });
             for (let i = 0; i < 50; i++) {
                 const p = ringPos(68, 180), g = new THREE.Group();
                 const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 2, 6), trunkMat); trunk.position.y = 1; g.add(trunk);
                 for (let l = 0; l < 3; l++) { const cw = 2.5 - l * 0.7, cy = 2.3 + l * 1.3; const cone = new THREE.Mesh(new THREE.ConeGeometry(cw, 2, 8), greenMat); cone.position.y = cy; g.add(cone); const cap = new THREE.Mesh(new THREE.ConeGeometry(cw * 0.95, 0.5, 8), snowMat); cap.position.y = cy + 0.9; g.add(cap); }
                 g.position.set(p.x, 0, p.z); targetScene.add(g);
             }
-        } else if (type === 'city') {
+            const iceMat = new THREE.MeshStandardMaterial({ color: 0x99ddff, transparent: true, opacity: 0.85, roughness: 0.1, metalness: 0.2 });
+            for (let i = 0; i < 20; i++) { const p = ringPos(68, 130), s = 0.8 + Math.random() * 1.5; const m = addMesh(new THREE.OctahedronGeometry(s, 0), iceMat, p.x, s * 0.8, p.z, Math.random() * Math.PI); m.scale.set(1, 1.8, 1); }
+        }
+        else if (type === 'city') {
             const buildingColors = [0x3a3a4a, 0x4a4a5a, 0x2a2a3a, 0x5a5a6a];
             const windowMat = new THREE.MeshBasicMaterial({ color: 0xffddaa });
             const windowGeo = new THREE.PlaneGeometry(0.7, 1);
             for (let i = 0; i < 30; i++) {
                 const p = ringPos(80, 180), w = 5 + Math.random() * 6, d = 5 + Math.random() * 6, h = 12 + Math.random() * 40;
-                const mat = new THREE.MeshLambertMaterial({ color: buildingColors[i % buildingColors.length] });
+                const mat = new THREE.MeshStandardMaterial({ color: buildingColors[i % buildingColors.length], roughness: 0.6, metalness: 0.2 });
                 const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); b.position.set(p.x, h / 2, p.z); targetScene.add(b);
+                const rows = Math.floor((h - 2) / 3), cols = Math.floor((w - 1.5) / 1.5);
+                for (let ry = 0; ry < rows; ry++) for (let cx = 0; cx < cols; cx++) if (Math.random() < 0.55) { const win = new THREE.Mesh(windowGeo, windowMat); win.position.set(p.x - w / 2 + 1 + cx * 1.5, 1.5 + ry * 3, p.z + d / 2 + 0.02); targetScene.add(win); }
             }
-        } else if (type === 'lava') {
-            const rockMat = new THREE.MeshLambertMaterial({ color: 0x1a0a0a, flatShading: true });
+            const poleMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.7 });
+            const lampMat = new THREE.MeshBasicMaterial({ color: 0xffee88 });
+            for (let i = 0; i < 10; i++) {
+                const p = ringPos(65, 95);
+                addMesh(new THREE.CylinderGeometry(0.15, 0.15, 7, 6), poleMat, p.x, 3.5, p.z);
+                const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.45, 8, 8), lampMat); lamp.position.set(p.x, 7.2, p.z); targetScene.add(lamp);
+                const pl = new THREE.PointLight(0xffee88, 0.4, 15); pl.position.set(p.x, 7.2, p.z); targetScene.add(pl);
+            }
+        }
+        else if (type === 'lava') {
+            const rockMat = new THREE.MeshStandardMaterial({ color: 0x1a0a0a, roughness: 1.0, flatShading: true });
             for (let i = 0; i < 35; i++) { const p = ringPos(80, 200), s = 2 + Math.random() * 5; addMesh(new THREE.DodecahedronGeometry(s, 0), rockMat, p.x, s * 0.6, p.z, Math.random() * Math.PI); }
             const lavaMat = new THREE.MeshBasicMaterial({ color: 0xff5511 });
             for (let i = 0; i < 18; i++) { const p = ringPos(85, 180), s = 3 + Math.random() * 6; const pool = new THREE.Mesh(new THREE.CircleGeometry(s, 12), lavaMat); pool.rotation.x = -Math.PI / 2; pool.position.set(p.x, 0.06, p.z); targetScene.add(pool); }
-        } else if (type === 'space') {
-            const rockMat = new THREE.MeshLambertMaterial({ color: 0x666677, flatShading: true });
+        }
+        else if (type === 'space') {
+            const rockMat = new THREE.MeshStandardMaterial({ color: 0x666677, roughness: 0.8, metalness: 0.1, flatShading: true });
             for (let i = 0; i < 50; i++) { const a = Math.random() * Math.PI * 2, r = 100 + Math.random() * 150, s = 1 + Math.random() * 4; addMesh(new THREE.DodecahedronGeometry(s, 0), rockMat, Math.cos(a) * r, Math.random() * 20 - 5, Math.sin(a) * r, Math.random() * Math.PI); }
         }
     }
@@ -801,8 +741,8 @@ window.onload = function() {
         const dome = new THREE.Mesh(skyGeo, skyMat); dome.name = 'skyDome'; dome.frustumCulled = false; targetScene.add(dome);
     }
 
-    function populateScene(targetScene, type) {
-        cps.length = 0; fullPath.length = 0;
+    function populateScene(targetScene, type, isMenu = false, weather = 'day') {
+        cps.length = 0; if (!isMenu) fullPath.length = 0;
         for (let i = targetScene.children.length - 1; i >= 0; i--) {
             const c = targetScene.children[i];
             if (c.isLight || c.name === 'skyDome') continue;
@@ -810,26 +750,36 @@ window.onload = function() {
             if (c.geometry) c.geometry.dispose();
             if (c.material) { if (Array.isArray(c.material)) c.material.forEach(m => m.dispose()); else c.material.dispose(); if (c.material.map) c.material.map.dispose(); }
         }
-        shadowNeedsUpdate = true;
+        if (!isMenu) shadowNeedsUpdate = true;
+
         let curve = new THREE.CatmullRomCurve3(createTrackPath(type), true);
-        let trackColor = 0x4a4a4a;
-        const SKY = {
-            track: { top: 0x3a6a9a, bottom: 0x8ab0d0, fog: 0x8ab0d0 }, desert: { top: 0xaa8040, bottom: 0xd4b070, fog: 0xd4b070 },
-            snow: { top: 0x4a6a8a, bottom: 0xa8c0d8, fog: 0xa8c0d8 }, city: { top: 0x0a0a1a, bottom: 0x2a1a3a, fog: 0x2a1a3a },
-            lava: { top: 0x1a0505, bottom: 0x5a1005, fog: 0x3a1008 }, space: { top: 0x000010, bottom: 0x080820, fog: 0x0a0a20 }
-        };
-        const s = SKY[type] || SKY.track;
-        makeSkyDome(targetScene, s.top, s.bottom);
-        targetScene.fog = new THREE.Fog(s.fog, 60, 220);
+        let trackColor = 0x3a3a3a;
+        
+        let skyTop = 0x3a6a9a, skyBottom = 0x8ab0d0, fogColor = 0x8ab0d0;
+        if (type === 'desert') { skyTop = 0xaa8040; skyBottom = 0xd4b070; fogColor = 0xd4b070; trackColor = 0x8a7a6a; }
+        else if (type === 'snow') { skyTop = 0x4a6a8a; skyBottom = 0xa8c0d8; fogColor = 0xa8c0d8; trackColor = 0x4a5a6a; }
+        else if (type === 'city') { skyTop = 0x0a0a1a; skyBottom = 0x2a1a3a; fogColor = 0x2a1a3a; trackColor = 0x2a2a2a; }
+        else if (type === 'lava') { skyTop = 0x1a0505; skyBottom = 0x5a1005; fogColor = 0x3a1008; trackColor = 0x3a1a11; }
+        else if (type === 'space') { skyTop = 0x000010; skyBottom = 0x080820; fogColor = 0x0a0a20; trackColor = 0x223355; }
+
+        if (weather === 'night') {
+            skyTop = 0x000000; skyBottom = 0x050510; fogColor = 0x050510;
+            hemiLight.intensity = 0.1; dirLight.intensity = 0.1; ambientLight.intensity = 0.05;
+        } else if (weather === 'rain') {
+            skyTop = 0x2a3a4a; skyBottom = 0x4a5a6a; fogColor = 0x4a5a6a;
+            hemiLight.intensity = 0.4; dirLight.intensity = 0.4; ambientLight.intensity = 0.2;
+        } else {
+            hemiLight.intensity = 0.6; dirLight.intensity = 1.0; ambientLight.intensity = 0.15;
+        }
+
+        makeSkyDome(targetScene, skyTop, skyBottom);
+        targetScene.fog = new THREE.Fog(fogColor, 80, 250);
         targetScene.background = null;
-        if (type === 'desert') trackColor = 0xc29550;
-        else if (type === 'snow') trackColor = 0x3b5c7a;
-        else if (type === 'city') trackColor = 0x4a4a5a;
-        else if (type === 'lava') trackColor = 0x5a2211;
-        else if (type === 'space') trackColor = 0x335599;
-        const groundColor = type === 'track' ? 0x3b8a3b : type === 'desert' ? 0xe0b070 : type === 'snow' ? 0xf0f8ff : type === 'city' ? 0x333344 : type === 'lava' ? 0x2a0000 : 0x050510;
-        const g = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshLambertMaterial({ color: groundColor }));
+
+        const groundColor = type === 'track' ? 0x4a8a3a : type === 'desert' ? 0xc8a070 : type === 'snow' ? 0xe0e8f0 : type === 'city' ? 0x2a2a38 : type === 'lava' ? 0x1a0000 : 0x050510;
+        const g = new THREE.Mesh(new THREE.PlaneGeometry(500, 500), new THREE.MeshStandardMaterial({ color: groundColor, roughness: 1 }));
         g.rotation.x = -Math.PI/2; g.receiveShadow = true; targetScene.add(g);
+
         const vertices = [], indices = [];
         for (let i = 0; i <= 150; i++) {
             const pt = curve.getPointAt(i/150), tan = curve.getTangentAt(i/150);
@@ -840,16 +790,27 @@ window.onload = function() {
         }
         const geo = new THREE.BufferGeometry();
         geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3)); geo.setIndex(indices); geo.computeVertexNormals();
-        const road = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ map: makeAsphaltTexture(trackColor), side: THREE.DoubleSide }));
+        
+        const asphaltTex = makeAsphaltTexture(trackColor);
+        const road = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: asphaltTex, side: THREE.DoubleSide, roughness: weather === 'rain' ? 0.4 : 0.8 }));
         road.receiveShadow = true; targetScene.add(road);
-        for (let i = 0; i < 80; i++) {
-            const pt = curve.getPointAt(i/80), tan = curve.getTangentAt(i/80);
-            const line = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 4), new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 0.7, transparent: true }));
-            line.rotation.x = -Math.PI/2; line.rotation.z = -Math.atan2(tan.x, tan.z); line.position.set(pt.x, 0.15, pt.z); targetScene.add(line);
+
+        for (const offset of [-7.5, 7.5]) {
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(
+                Array.from({length: 151}, (_, i) => {
+                    const pt = curve.getPointAt(i/150), tan = curve.getTangentAt(i/150);
+                    const norm = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
+                    return pt.clone().addScaledVector(norm, offset);
+                })
+            );
+            const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({ color: 0xffffff }));
+            line.position.y = 0.15; targetScene.add(line);
         }
+
         addDecorations(targetScene, type);
+
         for (let i = 0; i < 8; i++) { const pt = curve.getPoint(i/8); cps.push({ x: pt.x, y: 0, z: pt.z }); }
-        for (let i = 0; i <= 150; i++) { const pt = curve.getPoint(i/150); fullPath.push({ x: pt.x, z: pt.z }); }
+        if (!isMenu) { for (let i = 0; i <= 150; i++) { const pt = curve.getPoint(i/150); fullPath.push({ x: pt.x, z: pt.z }); } }
     }
 
     const mmCanvas = document.getElementById('minimapCanvas');
@@ -859,15 +820,14 @@ window.onload = function() {
         if (!fullPath.length) return;
         let minX = 1e9, maxX = -1e9, minZ = 1e9, maxZ = -1e9;
         for (const p of fullPath) { if (p.x < minX) minX = p.x; if (p.x > maxX) maxX = p.x; if (p.z < minZ) minZ = p.z; if (p.z > maxZ) maxZ = p.z; }
-        mmBounds = { minX: minX - 5, maxX: maxX + 5, minZ: minZ - 5, maxZ: maxZ + 5 };
+        const pad = 5; mmBounds = { minX: minX - pad, maxX: maxX + pad, minZ: minZ - pad, maxZ: maxZ + pad };
     }
     function mmX(x) { return ((x - mmBounds.minX) / (mmBounds.maxX - mmBounds.minX)) * mmCanvas.width; }
     function mmZ(z) { return ((z - mmBounds.minZ) / (mmBounds.maxZ - mmBounds.minZ)) * mmCanvas.height; }
     function drawMinimap() {
         if (!fullPath.length) return;
         mmCtx.clearRect(0, 0, mmCanvas.width, mmCanvas.height);
-        mmCtx.strokeStyle = 'rgba(255,204,0,0.4)'; mmCtx.lineWidth = 2;
-        mmCtx.beginPath();
+        mmCtx.strokeStyle = 'rgba(255,204,0,0.4)'; mmCtx.lineWidth = 2; mmCtx.beginPath();
         for (let i = 0; i < fullPath.length; i++) { const p = fullPath[i]; if (i === 0) mmCtx.moveTo(mmX(p.x), mmZ(p.z)); else mmCtx.lineTo(mmX(p.x), mmZ(p.z)); }
         mmCtx.stroke();
         mmCtx.fillStyle = 'rgba(200,200,200,0.6)';
@@ -878,57 +838,89 @@ window.onload = function() {
         if (player.mesh) { mmCtx.fillStyle = '#ffcc00'; mmCtx.beginPath(); mmCtx.arc(mmX(player.mesh.position.x), mmZ(player.mesh.position.z), 5, 0, Math.PI*2); mmCtx.fill(); }
     }
 
+    function loadMenuPreview() {
+        if (window.innerWidth <= 900) return;
+        populateScene(menuScene, state.currentLocation, true, 'day');
+        if (menuCar) menuScene.remove(menuCar);
+        const carData = createCar(state.carColor, state.parts);
+        menuCar = carData.group; menuCar.position.set(0, 0.4, 0); menuScene.add(menuCar);
+        menuCamera.position.set(10, 6, 10); menuCamera.lookAt(0, 0, 0);
+    }
+
     function startEngine() { if (engineOsc) return; if (audioCtx.state === 'suspended') audioCtx.resume(); engineOsc = audioCtx.createOscillator(); engineGain = audioCtx.createGain(); engineOsc.type = 'sawtooth'; engineOsc.frequency.setValueAtTime(50, audioCtx.currentTime); engineGain.gain.setValueAtTime(0.02, audioCtx.currentTime); engineOsc.connect(engineGain); engineGain.connect(audioCtx.destination); engineOsc.start(); }
-    function updateEngine(speed) { if (engineOsc) engineOsc.frequency.setTargetAtTime(50 + Math.abs(speed) * 4, audioCtx.currentTime, 0.1); }
+    function updateEngine(speed, isNitro) { if (engineOsc) { const base = 50 + Math.abs(speed) * 4; const freq = isNitro ? base + 40 : base; engineOsc.frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.1); } }
     function stopEngine() { if (engineOsc) { engineOsc.stop(); engineOsc.disconnect(); engineGain.disconnect(); engineOsc = null; } }
 
     function spawnBot(startX, startZ) {
-        const botData = createCar(0xff2222, { spoiler: true, neon: false, gold: false, antenna: false, tint: false, cape: 'none', meme: false, roofRack: false, bodyKit: false, exhaust: false, decals: false, neon2: false, smoked: false, chrome: false, bigSpoiler: false });
+        const botData = createCar(0xff2222, { spoiler: true, neon: false, gold: false, antenna: false, tint: false, roofRack: false, bodyKit: false, exhaust: false, decals: false, neon2: false, smoked: false, chrome: false, bigSpoiler: false });
         botData.group.position.set(startX, 0, startZ); scene.add(botData.group);
-        return { mesh: botData.group, angle: 0, speed: 0, nextCp: 1, lap: 1, maxSpeed: 52, accel: 30, turnRate: 4.5 };
+        return { mesh: botData.group, angle: 0, speed: 0, nextCp: 1, lap: 1, maxSpeed: 52, accel: 30, turnRate: 4.5, nitro: 100, hp: 100, progress: 0 };
+    }
+
+    function createNitroSpark(x, z, color = 0x00aaff) {
+        const geo = new THREE.SphereGeometry(0.1, 4, 4);
+        const mat = new THREE.MeshBasicMaterial({ color: color });
+        const spark = new THREE.Mesh(geo, mat);
+        spark.position.set(x, 0.5, z);
+        scene.add(spark);
+        nitroSparks.push({ mesh: spark, life: 1.0, vx: (Math.random()-0.5)*2, vz: (Math.random()-0.5)*2, vy: Math.random()*2 });
     }
 
     function startRace(location) {
         state.raceActive = true; startEngine();
-        populateScene(scene, location);
+        state.weather = Math.random() < 0.3 ? 'rain' : (Math.random() < 0.2 ? 'night' : 'day');
+        populateScene(scene, location, false, state.weather);
         if (player.mesh) scene.remove(player.mesh); 
         bots.forEach(b => { if (b.mesh) scene.remove(b.mesh); }); bots = [];
         shadowNeedsUpdate = true;
+        nitroSparks.forEach(s => scene.remove(s.mesh)); nitroSparks = [];
 
         const startPt = cps[0];
         const pData = createCar(state.carColor, state.parts);
-        player = { mesh: pData.group, capeObj: pData.capeObj, capeData: pData.capeData, angle: 0, speed: 0, lap: 1, nextCp: 1, lastKmh: -1, lastLightPos: new THREE.Vector3(1e4, 1e4, 1e4), raceStartTime: performance.now() };
+        player = { mesh: pData.group, angle: 0, speed: 0, lap: 1, nextCp: 1, lastKmh: -1, lastLightPos: new THREE.Vector3(1e4, 1e4, 1e4), raceStartTime: performance.now(), nitro: 100, driftScore: 0, hp: state.hp, isDrifting: false, elimTimer: 0 };
         player.mesh.position.set(startPt.x, 0, startPt.z); scene.add(player.mesh);
-        if (state.firstPerson) { player.mesh.visible = false; if (player.capeObj) player.capeObj.visible = false; }
+        if (state.firstPerson) { player.mesh.visible = false; }
 
         const nextPt = cps[1];
         const dirX = nextPt.x - startPt.x, dirZ = nextPt.z - startPt.z;
         const dirLen = Math.sqrt(dirX*dirX + dirZ*dirZ) || 1;
-        const botStart = { x: startPt.x - (dirX/dirLen) * 7, z: startPt.z - (dirZ/dirLen) * 7 };
-        const bot = spawnBot(botStart.x, botStart.z);
-        bot.angle = Math.atan2(nextPt.x - botStart.x, nextPt.z - botStart.z);
-        bot.mesh.rotation.y = bot.angle;
-        bots.push(bot);
+        
+        if (state.mode === 'elim') {
+            for (let i = 0; i < 4; i++) {
+                const offset = (i - 1.5) * 6;
+                const bot = spawnBot(startPt.x - (dirX/dirLen) * 15 + offset, startPt.z - (dirZ/dirLen) * 15);
+                bot.angle = Math.atan2(nextPt.x - bot.mesh.position.x, nextPt.z - bot.mesh.position.z);
+                bot.mesh.rotation.y = bot.angle; bots.push(bot);
+            }
+        } else {
+            const botStart = { x: startPt.x - (dirX/dirLen) * 7, z: startPt.z - (dirZ/dirLen) * 7 };
+            const bot = spawnBot(botStart.x, botStart.z);
+            bot.angle = Math.atan2(nextPt.x - botStart.x, nextPt.z - botStart.z);
+            bot.mesh.rotation.y = bot.angle; bots.push(bot);
+        }
         
         elMenuOverlay.classList.add('hidden'); elResultsOverlay.classList.add('hidden');
-        elHud.style.display = 'block'; elDebtBar.style.display = 'block'; elSpeedo.style.display = 'block';
-        elMenuBtn.style.display = 'flex'; elJoystick.style.display = 'block'; elGasBtn.style.display = 'flex';
+        elHud.style.display = 'block'; elHealthBar.style.display = 'block'; elDebtBar.style.display = 'block'; elSpeedo.style.display = 'block';
+        elMenuBtn.style.display = 'flex'; elJoystick.style.display = 'block'; elNitroBtn.style.display = 'flex'; elResetBtn.style.display = 'flex'; elDriftBtn.style.display = 'flex';
         elLapDisplay.textContent = '1/3';
+        elControlsHint.style.display = 'block';
         elMinimap.style.display = 'block'; elFpsCounter.style.display = 'block';
+        updateHealthUI();
         computeMinimapBounds();
         if (fullPath.length > 0) drawMinimap();
     }
 
-    function endRace(win, botWon) {
+    function endRace(win, botWon, reason) {
         state.raceActive = false; stopEngine();
         bots.forEach(b => { if (b.mesh) scene.remove(b.mesh); }); bots = [];
         if (remotePlayer && remotePlayer.mesh) { scene.remove(remotePlayer.mesh); }
-        remotePlayer = null; gasPressed = false; joystick = {x:0, y:0, active:false};
+        remotePlayer = null; nitroPressed = false; driftPressed = false; joystick = {x:0, y:0, active:false};
         if (mpSendInterval) { clearInterval(mpSendInterval); mpSendInterval = null; }
         shadowNeedsUpdate = true;
+        nitroSparks.forEach(s => scene.remove(s.mesh)); nitroSparks = [];
 
-        elHud.style.display = 'none'; elDebtBar.style.display = 'none'; elSpeedo.style.display = 'none'; 
-        elMenuBtn.style.display = 'none'; elJoystick.style.display = 'none'; elGasBtn.style.display = 'none';
+        elHud.style.display = 'none'; elHealthBar.style.display = 'none'; elDebtBar.style.display = 'none'; elSpeedo.style.display = 'none'; 
+        elMenuBtn.style.display = 'none'; elJoystick.style.display = 'none'; elNitroBtn.style.display = 'none'; elResetBtn.style.display = 'none'; elDriftBtn.style.display = 'none';
         elMinimap.style.display = 'none'; elFpsCounter.style.display = 'none';
         elResultsOverlay.classList.remove('hidden');
 
@@ -938,6 +930,18 @@ window.onload = function() {
             document.getElementById('resultsTitle').style.color = "#44ff88"; 
             document.getElementById('resultsBody').innerHTML = '<div>Вы выиграли!</div>'; 
             document.getElementById('rewardDisplay').textContent = '+150 💰'; 
+        } else if (reason === 'crash') {
+            state.coins += 0; state.hp = 0;
+            document.getElementById('resultsTitle').textContent = "ВЗРЫВ!";
+            document.getElementById('resultsTitle').style.color = "#ff3333";
+            document.getElementById('resultsBody').innerHTML = '<div>Машина уничтожена. HP восстановится в гараже.</div>';
+            document.getElementById('rewardDisplay').textContent = '0 💰';
+        } else if (reason === 'elim') {
+            state.coins += 20;
+            document.getElementById('resultsTitle').textContent = "ВЫБЫЛ";
+            document.getElementById('resultsTitle').style.color = "#ff3333";
+            document.getElementById('resultsBody').innerHTML = '<div>Вы были последним. Гонка окончена.</div>';
+            document.getElementById('rewardDisplay').textContent = '+20 💰';
         } else if (botWon) {
             state.coins += 10;
             document.getElementById('resultsTitle').textContent = "БОТ ПОБЕДИЛ";
@@ -968,14 +972,27 @@ window.onload = function() {
         joystick = { x: Math.cos(ang)*dist/50, y: Math.sin(ang)*dist/50, active: true };
     }
 
-    // Педаль газа для телефона
-    elGasBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); gasPressed = true; });
-    elGasBtn.addEventListener('pointerup', (e) => { e.preventDefault(); gasPressed = false; });
-    elGasBtn.addEventListener('pointercancel', () => { gasPressed = false; });
+    elNitroBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); nitroPressed = true; });
+    elNitroBtn.addEventListener('pointerup', (e) => { e.preventDefault(); nitroPressed = false; });
+    elNitroBtn.addEventListener('pointercancel', () => { nitroPressed = false; });
 
-    const WASD = ['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'];
-    window.addEventListener('keydown', e => { if (WASD.includes(e.key.toLowerCase())) { keys[e.key.toLowerCase()] = true; e.preventDefault(); } });
+    elDriftBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); driftPressed = true; });
+    elDriftBtn.addEventListener('pointerup', (e) => { e.preventDefault(); driftPressed = false; });
+    elDriftBtn.addEventListener('pointercancel', () => { driftPressed = false; });
+
+    elResetBtn.addEventListener('pointerdown', (e) => { 
+        e.preventDefault(); 
+        if (state.raceActive) {
+            const closest = getClosestPointOnPath(player.mesh.position.x, player.mesh.position.z);
+            player.mesh.position.set(closest.x, 0, closest.z);
+            player.speed = 0; player.angle = 0;
+        }
+    });
+
+    const WASD = ['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','shift','r',' '];
+    window.addEventListener('keydown', e => { if (WASD.includes(e.key.toLowerCase())) { keys[e.key.toLowerCase()] = true; e.preventDefault(); if(e.key.toLowerCase()==='r' && state.raceActive) { const closest = getClosestPointOnPath(player.mesh.position.x, player.mesh.position.z); player.mesh.position.set(closest.x, 0, closest.z); player.speed = 0; player.angle = 0; } } });
     window.addEventListener('keyup', e => { if (WASD.includes(e.key.toLowerCase())) keys[e.key.toLowerCase()] = false; });
+    document.body.addEventListener('click', () => window.focus());
 
     function getClosestPointOnPath(px, pz) {
         let minDistSq = Infinity, closestX = px, closestZ = pz;
@@ -998,52 +1015,154 @@ window.onload = function() {
         requestAnimationFrame(animate);
         let dt = Math.min(clock.getDelta(), 0.1);
         
+        if (menuCar && !state.raceActive && window.innerWidth > 900) {
+            menuCar.rotation.y += 0.5 * dt;
+            menuCamera.position.set(10, 6, 10);
+            menuCamera.lookAt(0, 0, 0);
+        }
+        
+        if (!state.raceActive && !elMenuOverlay.classList.contains('hidden') && window.innerWidth > 900) {
+            if (elMenuContainer.clientWidth > 0 && menuRenderer.domElement.width !== elMenuContainer.clientWidth) {
+                menuRenderer.setSize(elMenuContainer.clientWidth, elMenuContainer.clientHeight);
+                menuCamera.aspect = elMenuContainer.clientWidth / elMenuContainer.clientHeight;
+                menuCamera.updateProjectionMatrix();
+            }
+            menuRenderer.render(menuScene, menuCamera);
+        }
+
         if (state.raceActive) {
             let th = 0, st = 0;
-            if (keys['w'] || keys['arrowup'] || gasPressed) th += 1;
+            if (keys['w'] || keys['arrowup']) th += 1;
             if (keys['s'] || keys['arrowdown']) th -= 1;
             if (keys['a'] || keys['arrowleft']) st -= 1;
             if (keys['d'] || keys['arrowright']) st += 1;
-            if (joystick.active) { th -= joystick.y; st += joystick.x; }
+            if (joystick.active) { 
+                if (joystick.y < -0.2) th += 1; 
+                if (joystick.y > 0.2) th -= 1; 
+                st += joystick.x; 
+            }
 
-            const maxSpeed = 60, accel = 35;
-            if (th > 0.1) player.speed = Math.min(player.speed + accel * dt, maxSpeed);
-            else if (th < -0.1) player.speed = Math.max(player.speed - accel * dt, -maxSpeed / 2);
+            let currentMaxSpeed = state.currentCar === 'sport' ? 75 : (state.currentCar === 'suv' ? 55 : 60);
+            let currentAccel = state.currentCar === 'sport' ? 45 : (state.currentCar === 'suv' ? 30 : 35);
+            let currentTurnRate = state.currentCar === 'suv' ? 2.8 : 2.5;
+            let isNitroActive = false;
+            let isDrifting = (keys[' '] || driftPressed) && Math.abs(player.speed) > 10;
+
+            if (isDrifting) {
+                currentTurnRate *= 1.8; 
+                player.driftScore += Math.abs(st) * 10 * dt * (Math.abs(player.speed)/10);
+            }
+
+            if (state.weather === 'rain') currentAccel *= 0.8;
+
+            if ((keys['shift'] || nitroPressed) && player.nitro > 0) {
+                currentMaxSpeed *= 1.5;
+                currentAccel *= 2;
+                isNitroActive = true;
+                player.nitro = Math.max(0, player.nitro - dt * 40);
+                elNitroFill.style.height = player.nitro + '%';
+                elNitroBtn.classList.remove('charging');
+            } else {
+                player.nitro = Math.min(100, player.nitro + dt * 15);
+                elNitroFill.style.height = player.nitro + '%';
+                if (player.nitro < 20) elNitroBtn.classList.add('charging'); else elNitroBtn.classList.remove('charging');
+            }
+
+            if (th > 0.1) player.speed = Math.min(player.speed + currentAccel * dt, currentMaxSpeed);
+            else if (th < -0.1) player.speed = Math.max(player.speed - currentAccel * dt, -currentMaxSpeed / 2);
             else { player.speed *= 0.96; if (Math.abs(player.speed) < 0.1) player.speed = 0; }
 
             if (Math.abs(player.speed) > 0.1) {
-                player.angle -= st * 2.8 * dt * Math.sign(player.speed);
+                player.angle -= st * currentTurnRate * dt * Math.sign(player.speed);
                 player.mesh.position.x += Math.sin(player.angle) * player.speed * dt;
                 player.mesh.position.z += Math.cos(player.angle) * player.speed * dt;
             }
             player.mesh.rotation.y = player.angle;
             
-            updateEngine(player.speed);
-            if (player.capeData && !state.firstPerson) {
-                const sf = Math.min(Math.abs(player.speed), 40);
-                stepCape(player.capeData, dt, st * sf * 0.08, sf * 0.015, -sf * 0.06);
+            updateEngine(player.speed, isNitroActive);
+
+            if (isNitroActive && Math.random() < 0.5) {
+                const backX = player.mesh.position.x - Math.sin(player.angle) * 2.5;
+                const backZ = player.mesh.position.z - Math.cos(player.angle) * 2.5;
+                createNitroSpark(backX, backZ, 0x00aaff);
+            }
+            if (isDrifting && Math.random() < 0.5) {
+                const backX = player.mesh.position.x - Math.sin(player.angle) * 2.5;
+                const backZ = player.mesh.position.z - Math.cos(player.angle) * 2.5;
+                createNitroSpark(backX, backZ, 0xff00ff);
             }
 
             for (let bi = 0; bi < bots.length; bi++) {
                 const bot = bots[bi];
                 if (!bot.mesh) continue;
+                
+                bot.progress = bot.lap * 8 + bot.nextCp;
+                
                 const tCp = cps[bot.nextCp % cps.length];
                 const dx = tCp.x - bot.mesh.position.x, dz = tCp.z - bot.mesh.position.z;
                 const targetAngle = Math.atan2(dx, dz);
                 let angleDiff = targetAngle - bot.angle;
                 while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
                 while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+                
+                const turnSeverity = Math.abs(angleDiff);
                 const maxTurn = bot.turnRate * dt;
                 bot.angle += angleDiff < -maxTurn ? -maxTurn : angleDiff > maxTurn ? maxTurn : angleDiff;
                 bot.mesh.rotation.y = bot.angle;
-                const turnSeverity = Math.abs(angleDiff);
+                
                 const targetSpeed = bot.maxSpeed * Math.max(0.35, 1 - turnSeverity * 0.7);
                 if (bot.speed < targetSpeed) bot.speed = Math.min(bot.speed + bot.accel * dt, targetSpeed);
                 else bot.speed = Math.max(bot.speed - bot.accel * 1.6 * dt, targetSpeed);
+                
                 bot.mesh.position.x += Math.sin(bot.angle) * bot.speed * dt;
                 bot.mesh.position.z += Math.cos(bot.angle) * bot.speed * dt;
+
+                const distToBot = Math.sqrt((player.mesh.position.x - bot.mesh.position.x)**2 + (player.mesh.position.z - bot.mesh.position.z)**2);
+                if (distToBot < 3 && Math.abs(player.speed) > 10) {
+                    player.hp -= 20; updateHealthUI();
+                    player.speed *= -0.5; 
+                    bot.speed *= -0.5;
+                    if (player.hp <= 0) { endRace(false, false, 'crash'); return; }
+                    const pushDir = Math.atan2(player.mesh.position.x - bot.mesh.position.x, player.mesh.position.z - bot.mesh.position.z);
+                    player.mesh.position.x += Math.sin(pushDir) * 2;
+                    player.mesh.position.z += Math.cos(pushDir) * 2;
+                }
+
                 const cpDist = Math.sqrt(dx*dx + dz*dz);
-                if (cpDist < 12) { bot.nextCp++; if (bot.nextCp >= cps.length) { bot.lap++; bot.nextCp = 0; if (bot.lap > 3) { endRace(false, true); return; } } }
+                if (cpDist < 12) { bot.nextCp++; if (bot.nextCp >= cps.length) { bot.lap++; bot.nextCp = 0; if (bot.lap > 3 && state.mode !== 'elim') { endRace(false, true); return; } } }
+            }
+
+            if (state.mode === 'elim') {
+                player.elimTimer += dt;
+                if (player.elimTimer >= 15) {
+                    player.elimTimer = 0;
+                    let worstIdx = -1, worstProg = Infinity;
+                    const playerProg = player.lap * 8 + player.nextCp;
+                    
+                    let allBotsBetter = true;
+                    for (let i=0; i<bots.length; i++) {
+                        if (bots[i].progress < playerProg) allBotsBetter = false;
+                        if (bots[i].progress < worstProg) { worstProg = bots[i].progress; worstIdx = i; }
+                    }
+                    
+                    if (playerProg < worstProg && allBotsBetter) {
+                        endRace(false, false, 'elim'); return;
+                    } else if (worstIdx !== -1) {
+                        const b = bots[worstIdx];
+                        createNitroSpark(b.mesh.position.x, b.mesh.position.z, 0xff4400);
+                        createNitroSpark(b.mesh.position.x+1, b.mesh.position.z, 0xff4400);
+                        createNitroSpark(b.mesh.position.x-1, b.mesh.position.z, 0xff4400);
+                        scene.remove(b.mesh);
+                        bots.splice(worstIdx, 1);
+                    }
+                }
+            }
+
+            for (let i = nitroSparks.length - 1; i >= 0; i--) {
+                const s = nitroSparks[i];
+                s.life -= dt * 2;
+                if (s.life <= 0) { scene.remove(s.mesh); nitroSparks.splice(i, 1); }
+                else { s.mesh.position.x += s.vx * dt; s.mesh.position.y += s.vy * dt; s.mesh.position.z += s.vz * dt; s.mesh.scale.setScalar(s.life); }
             }
 
             if (remotePlayer && remotePlayer.mesh) {
@@ -1062,7 +1181,7 @@ window.onload = function() {
                 player.nextCp++;
                 if (player.nextCp >= cps.length) {
                     player.lap++;
-                    if (player.lap > 3) { endRace(true, false); return; }
+                    if (player.lap > 3 && state.mode !== 'elim') { endRace(true, false); return; }
                     player.nextCp = 0;
                     elLapDisplay.textContent = player.lap + '/3';
                 }
@@ -1075,6 +1194,8 @@ window.onload = function() {
                 player.mesh.position.x = closest.x + (player.mesh.position.x - closest.x) * ratio;
                 player.mesh.position.z = closest.z + (player.mesh.position.z - closest.z) * ratio;
                 player.speed *= 0.6;
+                player.hp -= 0.5; updateHealthUI();
+                if (player.hp <= 0) { endRace(false, false, 'crash'); return; }
             }
 
             const kmh = Math.round(Math.abs(player.speed) * 3.6);
@@ -1085,7 +1206,6 @@ window.onload = function() {
                 camera.position.set(player.mesh.position.x + sinA * 0.5, 1.55, player.mesh.position.z + cosA * 0.5);
                 camera.lookAt(player.mesh.position.x + sinA * 20, 1.4, player.mesh.position.z + cosA * 20);
             } else {
-                // Для телефона камера сделана чуть выше и ближе
                 const camDist = window.innerWidth < 900 ? 16 : 20;
                 const camHeight = window.innerWidth < 900 ? 8 : 10;
                 const camX = player.mesh.position.x - Math.sin(player.angle) * camDist;
@@ -1097,7 +1217,7 @@ window.onload = function() {
             }
             
             if (player.mesh.position.distanceToSquared(player.lastLightPos) > 2500) {
-                dirLight.position.set(player.mesh.position.x + 40, 70, player.mesh.position.z + 40);
+                dirLight.position.set(player.mesh.position.x + 50, 100, player.mesh.position.z + 50);
                 dirLight.target.position.copy(player.mesh.position);
                 dirLight.target.updateMatrixWorld();
                 player.lastLightPos.copy(player.mesh.position);
@@ -1110,59 +1230,99 @@ window.onload = function() {
                 elFpsCounter.textContent = Math.round(frameCount / ((performance.now() - lastFpsTime) / 1000)) + ' FPS';
                 frameCount = 0; lastFpsTime = performance.now();
             }
+
             if (shadowNeedsUpdate) {
                 renderer.shadowMap.needsUpdate = true;
                 shadowNeedsUpdate = false;
             }
+
             renderer.render(scene, camera);
         }
     }
 
+    document.getElementById('modeNormal').onclick = () => { state.mode = 'normal'; updateModeUI(); };
+    document.getElementById('modeElim').onclick = () => { state.mode = 'elim'; updateModeUI(); };
     document.getElementById('diffEasy').onclick = () => { state.diff = 'easy'; updateDiff(); };
     document.getElementById('diffMed').onclick = () => { state.diff = 'med'; updateDiff(); };
     document.getElementById('diffHard').onclick = () => { state.diff = 'hard'; updateDiff(); };
     document.getElementById('btnRaceStart').onclick = () => startRace(state.currentLocation);
-    document.getElementById('shopBtn').onclick = () => { elMenuOverlay.classList.add('hidden'); elShopOverlay.classList.remove('hidden'); renderShop(); };
-    document.getElementById('shopBackBtn').onclick = () => { elShopOverlay.classList.add('hidden'); elMenuOverlay.classList.remove('hidden'); updateProgressUI(); updateLocationsMenu(); };
-    document.getElementById('resultsMenuBtn').onclick = () => { elResultsOverlay.classList.add('hidden'); elMenuOverlay.classList.remove('hidden'); updateProgressUI(); };
-    elMenuBtn.onclick = () => { 
-        state.raceActive = false; stopEngine(); gasPressed = false;
-        bots.forEach(b => { if (b.mesh) scene.remove(b.mesh); }); bots = [];
-        if (remotePlayer && remotePlayer.mesh) { scene.remove(remotePlayer.mesh); remotePlayer = null; }
-        if (mpSendInterval) { clearInterval(mpSendInterval); mpSendInterval = null; }
-        shadowNeedsUpdate = true;
-        if (player.mesh) player.mesh.visible = true;
-        elHud.style.display = 'none'; elDebtBar.style.display = 'none'; elSpeedo.style.display = 'none'; 
-        elMenuBtn.style.display = 'none'; elJoystick.style.display = 'none'; elGasBtn.style.display = 'none';
-        elMinimap.style.display = 'none'; elFpsCounter.style.display = 'none';
-        elMenuOverlay.classList.remove('hidden'); updateProgressUI();
-    };
-    document.getElementById('camModeBtn').onclick = () => {
-        state.firstPerson = !state.firstPerson; saveGame(); updateCamLabel();
-        if (state.raceActive && player.mesh) { player.mesh.visible = !state.firstPerson; if (player.capeObj) player.capeObj.visible = !state.firstPerson; }
-    };
-    function buyPart(k, cost, val = true) { 
-        if (state.coins >= cost) { state.coins -= cost; state.parts[k] = val; saveGame(); updateCoinsUI(); updateProgressUI(); }
+    
+    document.getElementById('garageBtn').onclick = () => { elMenuOverlay.classList.add('hidden'); elGarageOverlay.classList.remove('hidden'); renderGarage(); };
+    document.getElementById('garageBackBtn').onclick = () => { elGarageOverlay.classList.add('hidden'); elMenuOverlay.classList.remove('hidden'); updateProgressUI(); updateLocationsMenu(); };
+    
+    document.getElementById('carClassic').onclick = () => { state.currentCar = 'classic'; saveGame(); renderGarage(); loadMenuPreview(); };
+    document.getElementById('carSport').onclick = () => { 
+        if (state.parts.carSport) { state.currentCar = 'sport'; saveGame(); renderGarage(); loadMenuPreview(); }
+        else if (state.coins >= 2000) { state.coins -= 2000; state.parts.carSport = true; state.currentCar = 'sport'; saveGame(); updateProgressUI(); renderGarage(); loadMenuPreview(); }
         else alert('Мало монет!');
-    }
-    document.getElementById('buySpoiler').onclick = () => buyPart('spoiler', 50);
-    document.getElementById('buyNeon').onclick = () => buyPart('neon', 100);
-    document.getElementById('buyGold').onclick = () => buyPart('gold', 150);
-    document.getElementById('buyAntenna').onclick = () => buyPart('antenna', 80);
-    document.getElementById('buyTint').onclick = () => buyPart('tint', 120);
-    document.getElementById('buyRoofRack').onclick = () => buyPart('roofRack', 120);
-    document.getElementById('buyBodyKit').onclick = () => buyPart('bodyKit', 200);
-    document.getElementById('buyExhaust').onclick = () => buyPart('exhaust', 90);
-    document.getElementById('buyDecals').onclick = () => buyPart('decals', 70);
-    document.getElementById('buyNeon2').onclick = () => buyPart('neon2', 80);
-    document.getElementById('buySmoked').onclick = () => buyPart('smoked', 60);
-    document.getElementById('buyChrome').onclick = () => buyPart('chrome', 130);
-    document.getElementById('buyBigSpoiler').onclick = () => buyPart('bigSpoiler', 250);
-    document.getElementById('buyCapeRed').onclick = () => buyPart('cape', 150, 0xff0000);
-    document.getElementById('buyCapeBlue').onclick = () => buyPart('cape', 150, 0x0000ff);
-    document.getElementById('buyCapeGold').onclick = () => buyPart('cape', 300, 0xffd700);
-    document.getElementById('buyCapePurple').onclick = () => buyPart('cape', 200, 0xaa00ff);
-    document.getElementById('buyMeme').onclick = () => buyPart('meme', 999);
+    };
+    document.getElementById('carSUV').onclick = () => { 
+        if (state.parts.carSUV) { state.currentCar = 'suv'; saveGame(); renderGarage(); loadMenuPreview(); }
+        else if (state.coins >= 3000) { state.coins -= 3000; state.parts.carSUV = true; state.currentCar = 'suv'; saveGame(); updateProgressUI(); renderGarage(); loadMenuPreview(); }
+        else alert('Мало монет!');
+    };
+
+    const skinsData = [
+        ['skinPolice', 'police', 500], ['skinTaxi', 'taxi', 500], ['skinRally', 'rally', 800], ['skinCamo', 'camo', 1000]
+    ];
+    skinsData.forEach(([id, key, price]) => {
+        document.getElementById(id).onclick = () => {
+            if (state.currentSkin === key) return;
+            if (state.parts[key]) { state.currentSkin = key; saveGame(); renderGarage(); loadMenuPreview(); }
+            else if (state.coins >= price) { state.coins -= price; state.parts[key] = true; state.currentSkin = key; saveGame(); updateProgressUI(); renderGarage(); loadMenuPreview(); }
+            else alert('Мало монет!');
+        };
+    });
+
+    document.getElementById('skinNone').onclick = () => { state.currentSkin = 'none'; saveGame(); renderGarage(); loadMenuPreview(); };
+
+    document.getElementById('repairBtn').onclick = () => {
+        if (state.hp >= 100) return alert('Машина цела.');
+        if (state.coins >= 50) { state.coins -= 50; state.hp = 100; saveGame(); updateProgressUI(); renderGarage(); }
+        else alert('Мало монет!');
+    };
+
+    document.getElementById('lootboxBtn').onclick = () => {
+        if (state.coins < 100) return alert('Нужно 100 монет!');
+        state.coins -= 100;
+        const possible = ['spoiler', 'neon', 'gold', 'antenna', 'tint', 'roofRack', 'bodyKit', 'exhaust', 'decals', 'neon2', 'smoked', 'chrome', 'bigSpoiler'];
+        const unowned = possible.filter(p => !state.parts[p]);
+        let rewardText = 'Ничего :(';
+        
+        if (unowned.length > 0 && Math.random() < 0.7) {
+            const item = unowned[Math.floor(Math.random() * unowned.length)];
+            state.parts[item] = true;
+            rewardText = 'Деталь: ' + item;
+        } else {
+            const coinsWin = Math.floor(20 + Math.random() * 100);
+            state.coins += coinsWin;
+            rewardText = 'Монеты: +' + coinsWin;
+        }
+        saveGame(); updateProgressUI(); renderGarage();
+        alert('🎁 Лутбокс открыт! Вы получили: ' + rewardText);
+    };
+
+    document.getElementById('wheelBtn').onclick = () => {
+        if (state.hasWheelSpunToday) {
+            if (state.coins >= 50) { state.coins -= 50; spinWheel(); }
+            else alert('Колесо уже крутили сегодня. За 50 монет можно ещё раз.');
+        } else {
+            state.hasWheelSpunToday = true;
+            spinWheel();
+        }
+        function spinWheel() {
+            const r = Math.random();
+            let text = '';
+            if (r < 0.1) { state.coins += 1000; text = 'Джекпот! +1000 💰'; }
+            else if (r < 0.4) { state.coins += 200; text = '+200 💰'; }
+            else if (r < 0.7) { state.coins += 50; text = '+50 💰'; }
+            else if (r < 0.9) { state.hp = Math.min(100, state.hp + 30); text = 'Ремонт +30 HP'; }
+            else { text = 'Пусто :('; }
+            saveGame(); updateProgressUI(); renderGarage();
+            alert('🎡 Колесо: ' + text);
+        }
+    };
+
     document.getElementById('loadCapeImgBtn').onclick = () => document.getElementById('capeFileInput').click();
     document.getElementById('capeFileInput').addEventListener('change', e => {
         const file = e.target.files && e.target.files[0];
@@ -1178,40 +1338,25 @@ window.onload = function() {
                 canvas.width = w; canvas.height = h;
                 canvas.getContext('2d').drawImage(img, 0, 0, w, h);
                 state.capeTexture = canvas.toDataURL('image/png');
-                if (state.parts.cape === 'none') state.parts.cape = 0xffffff;
-                saveGame(); updateCoinsUI(); refreshCapePreviewUI();
+                saveGame(); renderGarage(); loadMenuPreview();
             };
             img.src = ev.target.result;
         };
         reader.readAsDataURL(file); e.target.value = '';
     });
-    document.getElementById('clearCapeImgBtn').onclick = () => { state.capeTexture = null; state.parts.cape = 'none'; saveGame(); refreshCapePreviewUI(); updateCoinsUI(); };
+    document.getElementById('clearCapeImgBtn').onclick = () => { state.capeTexture = null; saveGame(); renderGarage(); loadMenuPreview(); };
+    
     document.getElementById('resetProgressBtn').onclick = () => {
         if (!confirm('Сбросить весь прогресс?')) return;
         try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
-        state.coins = 0; state.carColor = 0xff3333; state.capeTexture = null; state.lotteryLastDate = null;
-        state.parts = { spoiler: false, neon: false, gold: false, antenna: false, tint: false, cape: 'none', meme: false, roofRack: false, bodyKit: false, exhaust: false, decals: false, neon2: false, smoked: false, chrome: false, bigSpoiler: false };
+        state.coins = 0; state.carColor = 0xff3333; state.hp = 100;
+        state.parts = { spoiler: false, neon: false, gold: false, antenna: false, tint: false, roofRack: false, bodyKit: false, exhaust: false, decals: false, neon2: false, smoked: false, chrome: false, bigSpoiler: false, carSport: false, carSUV: false, skinPolice: false, skinTaxi: false, skinRally: false, skinCamo: false };
+        state.currentSkin = 'none'; state.currentCar = 'classic';
         state.currentLocation = 'track'; state.firstPerson = false;
-        updateCoinsUI(); updateProgressUI(); updateLocationsMenu(); renderShop(); refreshCapePreviewUI();
-        updateLotteryBadge(); updateCamLabel();
+        state.hasWheelSpunToday = false;
+        saveGame(); updateProgressUI(); updateLocationsMenu(); renderGarage(); loadMenuPreview();
+        updateCamLabel();
     };
-
-    document.getElementById('lotteryOpenAllBtn').onclick = () => {
-        if (lotteryState.done) return;
-        lcCtx.save(); lcCtx.globalCompositeOperation = 'destination-out'; lcCtx.fillRect(0, 0, LOTTERY_W, LOTTERY_H); lcCtx.restore();
-        lotteryState.revealed = new Array(LOTTERY_CELLS).fill(true); checkLotteryResult();
-    };
-    document.getElementById('lotteryBtn').onclick = () => {
-        if (!canPlayLottery()) { 
-            elMenuOverlay.classList.add('hidden'); elLotteryOverlay.classList.remove('hidden'); resetLottery(); lotteryState.done = true;
-            lcCtx.fillStyle = '#333'; lcCtx.fillRect(0, 0, LOTTERY_W, LOTTERY_H);
-            lcCtx.fillStyle = '#ffcc00'; lcCtx.font = 'bold 32px sans-serif'; lcCtx.textAlign = 'center'; lcCtx.textBaseline = 'middle';
-            lcCtx.fillText('🎰 УЖЕ СЫГРАНО', LOTTERY_W/2, LOTTERY_H/2 - 20);
-            lcCtx.font = 'bold 18px sans-serif'; lcCtx.fillStyle = '#888'; lcCtx.fillText('Приходи завтра!', LOTTERY_W/2, LOTTERY_H/2 + 25);
-            lcMsg.textContent = '⏰ Лотерея уже сыграна сегодня. Приходи завтра!'; lcMsg.className = 'lottery-msg lose';
-        } else openLottery();
-    };
-    document.getElementById('lotteryCloseBtn').onclick = () => { elLotteryOverlay.classList.add('hidden'); elMenuOverlay.classList.remove('hidden'); updateProgressUI(); updateCoinsUI(); updateLotteryBadge(); };
 
     document.getElementById('mpBtn').onclick = () => { elMpOverlay.classList.remove('hidden'); mpReset(); };
     document.getElementById('mpCloseBtn').onclick = () => { elMpOverlay.classList.add('hidden'); if (mpActive) return; if (mpPeer) { mpPeer.close(); mpPeer = null; } mpChannel = null; };
@@ -1239,11 +1384,29 @@ window.onload = function() {
     };
     document.getElementById('mpCopyAnswer').onclick = () => { document.getElementById('mpAnswerOut').select(); document.execCommand('copy'); mpSetStatus('📋 Ответ скопирован!', 'ok'); };
 
-    updateDiff();
-    updateProgressUI();
-    updateCoinsUI();
-    updateCamLabel();
-    updateLocationsMenu();
+    document.getElementById('resultsMenuBtn').onclick = () => { elResultsOverlay.classList.add('hidden'); elMenuOverlay.classList.remove('hidden'); updateProgressUI(); loadMenuPreview(); };
+    elMenuBtn.onclick = () => { 
+        state.raceActive = false; stopEngine();
+        bots.forEach(b => { if (b.mesh) scene.remove(b.mesh); }); bots = [];
+        if (remotePlayer && remotePlayer.mesh) { scene.remove(remotePlayer.mesh); remotePlayer = null; }
+        if (mpSendInterval) { clearInterval(mpSendInterval); mpSendInterval = null; }
+        shadowNeedsUpdate = true;
+        nitroSparks.forEach(s => scene.remove(s.mesh)); nitroSparks = [];
+        if (player.mesh) player.mesh.visible = true;
+        elHud.style.display = 'none'; elHealthBar.style.display = 'none'; elDebtBar.style.display = 'none'; elSpeedo.style.display = 'none'; 
+        elMenuBtn.style.display = 'none'; elJoystick.style.display = 'none'; elControlsHint.style.display = 'none'; elNitroBtn.style.display = 'none'; elResetBtn.style.display = 'none'; elDriftBtn.style.display = 'none';
+        elMinimap.style.display = 'none';
+        elFpsCounter.style.display = 'none';
+        elMenuOverlay.classList.remove('hidden'); updateProgressUI(); loadMenuPreview();
+    };
+    document.getElementById('camModeBtn').onclick = () => {
+        state.firstPerson = !state.firstPerson; saveGame(); updateCamLabel();
+        if (state.raceActive && player.mesh) { player.mesh.visible = !state.firstPerson; }
+    };
+
+    updateDiff(); updateModeUI();
+    updateProgressUI(); updateCamLabel(); updateLocationsMenu();
+    loadMenuPreview();
     animate();
 };
 </script>
