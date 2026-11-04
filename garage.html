@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Гараж — Квартира Мечты</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%238fbf7f'/%3E%3Crect x='10' y='34' width='44' height='12' rx='3' fill='%23e05353'/%3E%3Crect x='18' y='24' width='26' height='12' rx='3' fill='%23e05353'/%3E%3Crect x='21' y='27' width='9' height='6' rx='1' fill='%23334a5a'/%3E%3Crect x='32' y='27' width='9' height='6' rx='1' fill='%23334a5a'/%3E%3Ccircle cx='20' cy='46' r='5' fill='%23222'/%3E%3Ccircle cx='44' cy='46' r='5' fill='%23222'/%3E%3Ccircle cx='20' cy='46' r='2' fill='%23bbb'/%3E%3Ccircle cx='44' cy='46' r='2' fill='%23bbb'/%3E%3C/svg%3E">
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: linear-gradient(135deg, #0a0a0f 0%, #151520 100%);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    background: rgba(0,0,0,0.5);
+    border-bottom: 2px solid #ffcc00;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.topbar-logo {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: #8fbf7f; position: relative; flex-shrink: 0;
+}
+.topbar-logo::before {
+    content: ''; position: absolute; inset: 40% 15% 25% 15%;
+    background: #e05353; border-radius: 3px;
+}
+.topbar-logo::after {
+    content: ''; position: absolute; left: 30%; right: 30%; top: 28%; bottom: 40%;
+    background: #e05353; border-radius: 3px;
+}
+.topbar h1 {
+    font-size: 20px; margin: 0; letter-spacing: 1px;
+    color: #ffcc00; text-transform: uppercase;
+}
+.topbar .badge {
+    font-size: 11px; padding: 3px 8px; border-radius: 6px;
+    background: rgba(68,255,136,0.15); color: #44ff88;
+    border: 1px solid #44ff88; font-weight: bold;
+}
+.topbar .spacer { flex: 1; }
+.play-btn {
+    background: #ffcc00; color: #000; border: none; padding: 10px 22px;
+    font-weight: bold; border-radius: 8px; cursor: pointer;
+    font-size: 14px; transition: 0.2s;
+}
+.play-btn:hover { background: #ffdd33; transform: translateY(-1px); }
+
+.layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+@media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; padding: 12px; gap: 12px; }
+    .topbar { padding: 10px 14px; }
+    .topbar h1 { font-size: 16px; }
+    .play-btn { padding: 8px 14px; font-size: 12px; }
+}
+
+.panel {
+    background: rgba(20,20,28,0.85);
+    border: 2px solid #333;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+}
+.panel h2 {
+    font-size: 14px; margin: 0 0 12px 0; color: #ffcc00;
+    text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 1px solid #333; padding-bottom: 8px;
+}
+.profile-row {
+    display: flex; gap: 8px; margin-bottom: 12px;
+}
+.profile-row input {
+    flex: 1; background: #111; color: #fff; border: 1px solid #444;
+    padding: 8px 10px; border-radius: 8px; font-size: 13px;
+    outline: none; transition: 0.2s;
+}
+.profile-row input:focus { border-color: #ffcc00; }
+.btn-sm {
+    background: #333; color: #fff; border: 1px solid #555;
+    padding: 8px 12px; border-radius: 8px; cursor: pointer;
+    font-size: 12px; font-weight: bold; transition: 0.2s; white-space: nowrap;
+}
+.btn-sm:hover { background: #444; border-color: #ffcc00; }
+.btn-sm.primary { background: #ffcc00; color: #000; border-color: #ffcc00; }
+.btn-sm.primary:hover { background: #ffdd33; }
+.btn-sm.danger { border-color: #ff3333; color: #ff3333; background: transparent; }
+.btn-sm.danger:hover { background: rgba(255,51,51,0.15); }
+
+.profiles-list {
+    display: flex; flex-direction: column; gap: 6px;
+    max-height: 200px; overflow-y: auto; margin-top: 8px;
+}
+.profile-item {
+    display: flex; align-items: center; gap: 8px;
+    background: #111; border: 1px solid #333; padding: 8px 10px;
+    border-radius: 8px; cursor: pointer; transition: 0.2s;
+}
+.profile-item:hover { border-color: #ffcc00; }
+.profile-item.active { border-color: #44ff88; background: rgba(68,255,136,0.08); }
+.profile-item .color-dot {
+    width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid #444;
+}
+.profile-item .name { flex: 1; font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
+.profile-item .del {
+    background: transparent; border: none; color: #ff5555;
+    cursor: pointer; font-size: 16px; padding: 0 4px;
+}
+.profile-item .del:hover { color: #ff8888; }
+
+.shop-section { margin-bottom: 16px; }
+.shop-section h3 {
+    font-size: 12px; margin: 0 0 8px 0; color: #aaa;
+    text-transform: uppercase; letter-spacing: 0.5px;
+}
+.color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+.color-option {
+    width: 34px; height: 34px; border-radius: 8px; cursor: pointer;
+    border: 3px solid transparent; transition: 0.2s;
+}
+.color-option:hover { transform: scale(1.1); }
+.color-option.selected { border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+
+.parts-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+}
+.part-btn {
+    background: #111; color: #fff; border: 1px solid #444;
+    padding: 8px; border-radius: 8px; cursor: pointer;
+    font-size: 12px; transition: 0.2s; text-align: center;
+}
+.part-btn:hover { border-color: #ffcc00; }
+.part-btn.owned { background: rgba(68,255,136,0.15); border-color: #44ff88; color: #44ff88; }
+.part-btn.owned::after { content: ' ✓'; }
+
+.cape-picker { display: flex; gap: 6px; flex-wrap: wrap; }
+.cape-btn {
+    background: #111; border: 2px solid #444; padding: 6px 10px;
+    border-radius: 8px; cursor: pointer; font-size: 11px; color: #fff;
+    transition: 0.2s;
+}
+.cape-btn:hover { border-color: #ffcc00; }
+.cape-btn.active { border-color: #44ff88; background: rgba(68,255,136,0.15); color: #44ff88; }
+
+.preview-wrap {
+    position: relative; width: 100%; min-height: 480px;
+    background: radial-gradient(ellipse at center, #222 0%, #0a0a0f 100%);
+    border-radius: 14px; overflow: hidden;
+    border: 2px solid #333;
+}
+@media (max-width: 900px) {
+    .preview-wrap { min-height: 320px; }
+}
+#previewCanvas { display: block; width: 100%; height: 100%; min-height: 480px; }
+@media (max-width: 900px) { #previewCanvas { min-height: 320px; } }
+
+.preview-controls {
+    position: absolute; bottom: 12px; left: 12px; right: 12px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center; pointer-events: none;
+}
+.preview-controls button {
+    pointer-events: auto;
+    background: rgba(0,0,0,0.75); color: #fff; border: 1px solid #555;
+    padding: 6px 12px; border-radius: 8px; cursor: pointer;
+    font-size: 11px; font-weight: bold; transition: 0.2s;
+}
+.preview-controls button:hover { border-color: #ffcc00; color: #ffcc00; }
+
+.stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    margin-top: 12px;
+}
+.stat {
+    background: #111; border: 1px solid #333; border-radius: 8px;
+    padding: 8px; text-align: center;
+}
+.stat .label { font-size: 10px; color: #888; text-transform: uppercase; }
+.stat .value { font-size: 16px; font-weight: bold; color: #44ff88; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-logo"></div>
+    <h1>Гараж — Квартира Мечты</h1>
+    <span class="badge">ПРОФИЛЬ</span>
+    <div class="spacer"></div>
+    <button class="play-btn" id="playBtn">▶ В ИГРУ</button>
+</div>
+
+<div class="layout">
+    <div class="panel">
+        <h2>Профиль конфигурации</h2>
+        <div class="profile-row">
+            <input type="text" id="profileName" placeholder="Название профиля" maxlength="24">
+            <button class="btn-sm primary" id="saveProfileBtn">💾 Сохранить</button>
+        </div>
+        <div class="profiles-list" id="profilesList"></div>
+        <button class="btn-sm danger" id="resetAllBtn" style="width:100%; margin-top:8px;">🗑 Сбросить всё</button>
+    </div>
+
+    <div>
+        <div class="panel">
+            <h2>Настройка машины</h2>
+
+            <div class="shop-section">
+                <h3>Цвет кузова</h3>
+                <div class="color-picker" id="colorPicker"></div>
+            </div>
+
+            <div class="shop-section">
+                <h3>Детали</h3>
+                <div class="parts-grid" id="partsGrid"></div>
+            </div>
+
+            <div class="shop-section">
+                <h3>Плащ</h3>
+                <div class="cape-picker" id="capePicker"></div>
+            </div>
+        </div>
+
+        <div class="panel" style="margin-top:20px;">
+            <h2>3D-Превью</h2>
+            <div class="preview-wrap">
+                <canvas id="previewCanvas"></canvas>
+                <div class="preview-controls">
+                    <button id="rotateLeft">⟲ Повернуть</button>
+                    <button id="rotateRight">⟳ Повернуть</button>
+                    <button id="autoRotateBtn">⏸ Авто-поворот</button>
+                    <button id="resetCamBtn">⛶ Сброс камеры</button>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat"><div class="label">Детали</div><div class="value" id="statParts">0</div></div>
+                <div class="stat"><div class="label">Цвет</div><div class="value" id="statColor">—</div></div>
+                <div class="stat"><div class="label">Плащ</div><div class="value" id="statCape">—</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="three.min.js"></script>
+<script>
+(function() {
+    if (typeof THREE === 'undefined') {
+        document.body.innerHTML = '<h1 style="color:red;text-align:center;margin-top:50px;">Error: three.min.js not found</h1>';
+        return;
+    }
+
+    // === Ключи ===
+    const SAVE_KEY = 'dreamApartmentSave_v1';      // ключ, который использует игра
+    const PROFILES_KEY = 'dreamGarageProfiles_v1'; // ключ, где хранятся профили
+
+    // === Цвета/названия ===
+    const COLORS = [
+        { hex: 0xff3333, name: 'Красный' },
+        { hex: 0x33ff66, name: 'Зелёный' },
+        { hex: 0x3366ff, name: 'Синий' },
+        { hex: 0xffcc00, name: 'Жёлтый' },
+        { hex: 0xff00ff, name: 'Розовый' },
+        { hex: 0xffffff, name: 'Белый' },
+    ];
+    const PARTS = [
+        { key: 'spoiler', name: 'Спойлер' },
+        { key: 'bigSpoiler', name: 'Огромный спойлер' },
+        { key: 'neon', name: 'Неон' },
+        { key: 'neon2', name: 'Второй неон' },
+        { key: 'gold', name: 'Золотые диски' },
+        { key: 'chrome', name: 'Хром-диски' },
+        { key: 'antenna', name: 'Антенна' },
+        { key: 'roofRack', name: 'Багажник' },
+        { key: 'bodyKit', name: 'Обвес' },
+        { key: 'exhaust', name: 'Выхлоп' },
+        { key: 'decals', name: 'Наклейки' },
+        { key: 'smoked', name: 'Тёмные фары' },
+        { key: 'meme', name: 'Мем-текстура' },
+    ];
+    const CAPES = [
+        { val: 'none', name: 'Без плаща', color: '#444' },
+        { val: 0xff0000, name: 'Красный', color: '#ff0000' },
+        { val: 0x0000ff, name: 'Синий', color: '#0000ff' },
+        { val: 0xffd700, name: 'Золотой', color: '#ffd700' },
+        { val: 0xaa00ff, name: 'Фиолетовый', color: '#aa00ff' },
+    ];
+
+    // === Загрузка/сохранение ===
+    function defaultConfig() {
+        return {
+            coins: 0,
+            carColor: 0xff3333,
+            parts: { spoiler: false, neon: false, gold: false, antenna: false, tint: false, cape: 'none', meme: false,
+                     roofRack: false, bodyKit: false, exhaust: false, decals: false, neon2: false, smoked: false, chrome: false, bigSpoiler: false },
+            capeTexture: null,
+            lotteryLastDate: null,
+            firstPerson: false
+        };
+    }
+    function loadActiveConfig() {
+        try {
+            const raw = localStorage.getItem(SAVE_KEY);
+            if (!raw) return defaultConfig();
+            const data = JSON.parse(raw);
+            const cfg = defaultConfig();
+            if (typeof data.coins === 'number') cfg.coins = data.coins;
+            if (typeof data.carColor === 'number') cfg.carColor = data.carColor;
+            if (data.parts && typeof data.parts === 'object') for (const k in cfg.parts) if (k in data.parts) cfg.parts[k] = data.parts[k];
+            if (typeof data.capeTexture === 'string') cfg.capeTexture = data.capeTexture;
+            if (typeof data.lotteryLastDate === 'string') cfg.lotteryLastDate = data.lotteryLastDate;
+            if (typeof data.firstPerson === 'boolean') cfg.firstPerson = data.firstPerson;
+            return cfg;
+        } catch (e) { return defaultConfig(); }
+    }
+    function saveActiveConfig(cfg) {
+        try { localStorage.setItem(SAVE_KEY, JSON.stringify(cfg)); } catch (e) {}
+    }
+    function loadProfiles() {
+        try { return JSON.parse(localStorage.getItem(PROFILES_KEY) || '{}'); } catch (e) { return {}; }
+    }
+    function saveProfiles(p) {
+        try { localStorage.setItem(PROFILES_KEY, JSON.stringify(p)); } catch (e) {}
+    }
+
+    let config = loadActiveConfig();
+    let profiles = loadProfiles();
+    let activeProfile = null;
+
+    // === UI: цвета ===
+    const colorPicker = document.getElementById('colorPicker');
+    function renderColors() {
+        colorPicker.innerHTML = '';
+        COLORS.forEach(c => {
+            const d = document.createElement('div');
+            d.className = 'color-option' + (config.carColor === c.hex ? ' selected' : '');
+            d.style.backgroundColor = '#' + c.hex.toString(16).padStart(6, '0');
+            d.title = c.name;
+            d.onclick = () => { config.carColor = c.hex; renderColors(); updatePreviewCar(); updateStats(); saveActive(); };
+            colorPicker.appendChild(d);
+        });
+    }
+
+    // === UI: детали ===
+    const partsGrid = document.getElementById('partsGrid');
+    function renderParts() {
+        partsGrid.innerHTML = '';
+        PARTS.forEach(p => {
+            const b = document.createElement('button');
+            b.className = 'part-btn' + (config.parts[p.key] ? ' owned' : '');
+            b.textContent = p.name;
+            b.onclick = () => { config.parts[p.key] = !config.parts[p.key]; renderParts(); updatePreviewCar(); updateStats(); saveActive(); };
+            partsGrid.appendChild(b);
+        });
+    }
+
+    // === UI: плащ ===
+    const capePicker = document.getElementById('capePicker');
+    function renderCapes() {
+        capePicker.innerHTML = '';
+        CAPES.forEach(c => {
+            const b = document.createElement('button');
+            b.className = 'cape-btn' + (String(config.parts.cape) === String(c.val) ? ' active' : '');
+            b.textContent = c.name;
+            b.style.borderLeftColor = c.color;
+            b.style.borderLeftWidth = '6px';
+            b.onclick = () => {
+                config.parts.cape = c.val;
+                if (c.val === 'none') config.capeTexture = null;
+                renderCapes(); updatePreviewCar(); updateStats(); saveActive();
+            };
+            capePicker.appendChild(b);
+        });
+    }
+
+    // === UI: профили ===
+    const profilesList = document.getElementById('profilesList');
+    function renderProfiles() {
+        profilesList.innerHTML = '';
+        const keys = Object.keys(profiles);
+        if (keys.length === 0) {
+            profilesList.innerHTML = '<div style="color:#555;font-size:12px;text-align:center;padding:8px;">Пока нет профилей</div>';
+            return;
+        }
+        keys.forEach(name => {
+            const p = profiles[name];
+            const item = document.createElement('div');
+            item.className = 'profile-item' + (activeProfile === name ? ' active' : '');
+            const dot = document.createElement('div');
+            dot.className = 'color-dot';
+            dot.style.background = '#' + (p.carColor || 0xff3333).toString(16).padStart(6, '0');
+            const nm = document.createElement('div');
+            nm.className = 'name';
+            nm.textContent = name;
+            const del = document.createElement('button');
+            del.className = 'del';
+            del.textContent = '×';
+            del.title = 'Удалить профиль';
+            del.onclick = (e) => {
+                e.stopPropagation();
+                if (!confirm('Удалить профиль "' + name + '"?')) return;
+                delete profiles[name];
+                if (activeProfile === name) activeProfile = null;
+                saveProfiles(profiles); renderProfiles();
+            };
+            item.onclick = () => loadProfile(name);
+            item.appendChild(dot); item.appendChild(nm); item.appendChild(del);
+            profilesList.appendChild(item);
+        });
+    }
+    function loadProfile(name) {
+        if (!profiles[name]) return;
+        config = JSON.parse(JSON.stringify(profiles[name]));
+        activeProfile = name;
+        saveActive();
+        renderColors(); renderParts(); renderCapes();
+        updatePreviewCar(); updateStats(); renderProfiles();
+        document.getElementById('profileName').value = name;
+    }
+
+    // === Сохранение/загрузка активной конфигурации ===
+    function saveActive() { saveActiveConfig(config); }
+    function updateStats() {
+        const count = Object.values(config.parts).filter(v => v === true).length;
+        document.getElementById('statParts').textContent = count;
+        const c = COLORS.find(x => x.hex === config.carColor);
+        document.getElementById('statColor').textContent = c ? c.name : '—';
+        const cp = CAPES.find(x => String(x.val) === String(config.parts.cape));
+        document.getElementById('statCape').textContent = cp ? cp.name : '—';
+    }
+
+    document.getElementById('saveProfileBtn').onclick = () => {
+        const name = document.getElementById('profileName').value.trim();
+        if (!name) return alert('Введи название профиля');
+        if (profiles[name] && !confirm('Профиль "' + name + '" уже существует. Перезаписать?')) return;
+        profiles[name] = JSON.parse(JSON.stringify(config));
+        saveProfiles(profiles);
+        activeProfile = name;
+        renderProfiles();
+    };
+    document.getElementById('resetAllBtn').onclick = () => {
+        if (!confirm('Сбросить активную конфигурацию и все профили?')) return;
+        config = defaultConfig(); activeProfile = null;
+        profiles = {}; saveProfiles(profiles); saveActive();
+        renderColors(); renderParts(); renderCapes(); renderProfiles();
+        updatePreviewCar(); updateStats();
+        document.getElementById('profileName').value = '';
+    };
+    document.getElementById('playBtn').onclick = () => {
+        saveActive();
+        window.location.href = 'code.html';
+    };
+
+    // === 3D-превью ===
+    const canvas = document.getElementById('previewCanvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.9;
+    if (THREE.sRGBEncoding !== undefined) renderer.outputEncoding = THREE.sRGBEncoding;
+
+    const scene = new THREE.Scene();
+    scene.background = null;
+
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(7, 5, 9);
+    camera.lookAt(0, 0.8, 0);
+
+    // Свет
+    scene.add(new THREE.HemisphereLight(0xbcd4ff, 0x334433, 0.35));
+    scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+    const dir = new THREE.DirectionalLight(0xfff2e0, 1.1);
+    dir.position.set(6, 10, 6);
+    dir.castShadow = true;
+    dir.shadow.mapSize.set(1024, 1024);
+    dir.shadow.camera.near = 0.5;
+    dir.shadow.camera.far = 40;
+    dir.shadow.camera.left = -10;
+    dir.shadow.camera.right = 10;
+    dir.shadow.camera.top = 10;
+    dir.shadow.camera.bottom = -10;
+    dir.shadow.bias = -0.0005;
+    dir.shadow.normalBias = 0.05;
+    scene.add(dir);
+
+    // Подиум
+    const podium = new THREE.Mesh(
+        new THREE.CylinderGeometry(3.2, 3.2, 0.3, 48),
+        new THREE.MeshLambertMaterial({ color: 0x1a1a22 })
+    );
+    podium.position.y = -0.15;
+    podium.receiveShadow = true;
+    scene.add(podium);
+    const podiumRing = new THREE.Mesh(
+        new THREE.TorusGeometry(3.15, 0.06, 12, 64),
+        new THREE.MeshBasicMaterial({ color: 0xffcc00 })
+    );
+    podiumRing.rotation.x = -Math.PI / 2;
+    podiumRing.position.y = 0.02;
+    scene.add(podiumRing);
+
+    // === Создание машины (копия логики из игры) ===
+    function createMemeTexture() {
+        const c = document.createElement('canvas'); c.width = c.height = 512;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#4a6b3a'; ctx.fillRect(0, 0, 512, 512);
+        ctx.strokeStyle = '#2a4b1a'; ctx.lineWidth = 4;
+        for (let i = 0; i < 512; i += 32) for (let j = 0; j < 512; j += 32) { ctx.beginPath(); ctx.arc(i, j, 16, 0, Math.PI); ctx.stroke(); }
+        ctx.fillStyle = 'white'; ctx.font = 'bold 80px sans-serif'; ctx.fillText('rіпотіпуза', 50, 300);
+        const t = new THREE.CanvasTexture(c);
+        if (THREE.sRGBEncoding !== undefined) t.encoding = THREE.sRGBEncoding;
+        return t;
+    }
+    function createCape(color, textureDataUrl) {
+        const segX = 6, segY = 8, w = 2.0, h = 1.8;
+        const geo = new THREE.PlaneGeometry(w, h, segX, segY);
+        let mat;
+        if (textureDataUrl) {
+            const tex = new THREE.TextureLoader().load(textureDataUrl);
+            if (THREE.sRGBEncoding !== undefined) tex.encoding = THREE.sRGBEncoding;
+            mat = new THREE.MeshLambertMaterial({ map: tex, side: THREE.DoubleSide, transparent: true, opacity: 0.95 });
+        } else {
+            mat = new THREE.MeshLambertMaterial({ color, side: THREE.DoubleSide, transparent: true, opacity: 0.92 });
+        }
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(0, 1.0, -2.5); mesh.castShadow = true;
+        const arr = geo.attributes.position.array;
+        const count = geo.attributes.position.count;
+        for (let i = 0; i < count; i++) arr[i*3+1] -= h/2;
+        const pinned = new Uint8Array(count);
+        for (let i = 0; i < count; i++) if (arr[i*3+1] > -0.05) pinned[i] = 1;
+        for (let i = 0; i < count; i++) if (!pinned[i]) { const d = -arr[i*3+1]; arr[i*3+2] -= d * 0.35; }
+        geo.computeVertexNormals();
+        return { mesh, arr, pinned, count };
+    }
+    function createCar(color, parts) {
+        const group = new THREE.Group();
+        let bodyMat;
+        if (parts.meme) bodyMat = new THREE.MeshLambertMaterial({ map: createMemeTexture() });
+        else bodyMat = new THREE.MeshLambertMaterial({ color: color });
+        const glassMat = new THREE.MeshLambertMaterial({ color: 0x1a2a3a, transparent: true, opacity: 0.8 });
+
+        const body = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.6, 5), bodyMat); body.position.y = 0.7; group.add(body);
+        const sideGeo = new THREE.BoxGeometry(0.06, 0.5, 4.6);
+        const sL = new THREE.Mesh(sideGeo, bodyMat); sL.position.set(-1.26, 0.7, 0); group.add(sL);
+        const sR = new THREE.Mesh(sideGeo, bodyMat); sR.position.set(1.26, 0.7, 0); group.add(sR);
+        const hood = new THREE.Mesh(new THREE.BoxGeometry(2.35, 0.15, 1.6), bodyMat); hood.position.set(0, 1.05, 1.6); group.add(hood);
+        const roof = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.12, 2.0), bodyMat); roof.position.set(0, 1.55, -0.2); group.add(roof);
+        const ws = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.5, 0.08), glassMat); ws.position.set(0, 1.35, 0.85); ws.rotation.x = -0.35; group.add(ws);
+        const rg = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.45, 0.08), glassMat); rg.position.set(0, 1.35, -1.25); rg.rotation.x = 0.35; group.add(rg);
+        const sgg = new THREE.BoxGeometry(0.03, 0.4, 1.8);
+        const sgL = new THREE.Mesh(sgg, glassMat); sgL.position.set(-0.96, 1.4, -0.2); group.add(sgL);
+        const sgR = new THREE.Mesh(sgg, glassMat); sgR.position.set(0.96, 1.4, -0.2); group.add(sgR);
+
+        const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 20);
+        const tireMat = new THREE.MeshLambertMaterial({ color: 0x1a1a1a });
+        let rimColor = parts.chrome ? 0xffffff : parts.gold ? 0xffcc00 : 0xbbbbbb;
+        const rimMat = new THREE.MeshLambertMaterial({ color: rimColor });
+        [[-1.2, 0.4, 1.5], [1.2, 0.4, 1.5], [-1.2, 0.4, -1.5], [1.2, 0.4, -1.5]].forEach(p => {
+            const t = new THREE.Mesh(wheelGeo, tireMat); t.rotation.z = Math.PI/2; t.position.set(p[0], p[1], p[2]); group.add(t);
+            const r = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.31, 16), rimMat); r.rotation.z = Math.PI/2; r.position.set(p[0], p[1], p[2]); group.add(r);
+        });
+
+        const hlMat = new THREE.MeshLambertMaterial({ color: parts.smoked ? 0x333333 : 0xddeeff });
+        [[-0.85, 2.52], [0.85, 2.52]].forEach(p => {
+            const h = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.15, 0.1), hlMat); h.position.set(p[0], 0.75, p[1]); group.add(h);
+        });
+        const tlMat = new THREE.MeshLambertMaterial({ color: 0xaa0000 });
+        [[-0.85, -2.52], [0.85, -2.52]].forEach(p => {
+            const t = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.15, 0.1), tlMat); t.position.set(p[0], 0.75, p[1]); group.add(t);
+        });
+
+        if (parts.bigSpoiler) {
+            const spM = new THREE.MeshLambertMaterial({ color: 0x181818 });
+            const sp = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.15, 0.9), spM); sp.position.set(0, 1.9, -2.4); group.add(sp);
+            [[-1.0], [1.0]].forEach(([x]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.9, 0.3), spM); l.position.set(x, 1.45, -2.4); group.add(l); });
+        } else if (parts.spoiler) {
+            const spM = new THREE.MeshLambertMaterial({ color: 0x181818 });
+            const sp = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.08, 0.6), spM); sp.position.set(0, 1.5, -2.3); group.add(sp);
+            [[-0.9], [0.9]].forEach(([x]) => { const l = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.35, 0.3), spM); l.position.set(x, 1.32, -2.3); group.add(l); });
+        }
+        if (parts.antenna) {
+            const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2, 8), new THREE.MeshLambertMaterial({ color: 0xdddddd })); ant.position.set(0, 2, -1.5); group.add(ant);
+            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 8), new THREE.MeshLambertMaterial({ color: 0xcc0000 })); ball.position.set(0, 3, -1.5); group.add(ball);
+        }
+        if (parts.roofRack) {
+            const rM = new THREE.MeshLambertMaterial({ color: 0x444444 });
+            [[-0.7], [0.7]].forEach(([x]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 2.5), rM); b.position.set(x, 1.72, 0); group.add(b); });
+            for (let i = -1; i <= 1; i++) { const b = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.08, 0.12), rM); b.position.set(0, 1.72, i * 0.9); group.add(b); }
+        }
+        if (parts.bodyKit) {
+            const kM = new THREE.MeshLambertMaterial({ color: 0x222222 });
+            const fl = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.12, 0.4), kM); fl.position.set(0, 0.42, 2.65); group.add(fl);
+            const rl = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.12, 0.4), kM); rl.position.set(0, 0.42, -2.65); group.add(rl);
+            [[-1.32], [1.32]].forEach(([x]) => { const s = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.2, 3.5), kM); s.position.set(x, 0.42, 0); group.add(s); });
+        }
+        if (parts.exhaust) {
+            const eM = new THREE.MeshLambertMaterial({ color: 0xaaaaaa });
+            [[-0.6], [0.6]].forEach(([x]) => {
+                const p = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.3, 12), eM); p.rotation.x = Math.PI/2; p.position.set(x, 0.45, -2.6); group.add(p);
+                const g = new THREE.PointLight(0xff4400, 0.4, 3); g.position.set(x, 0.45, -2.7); group.add(g);
+            });
+        }
+        if (parts.decals) {
+            const dc = [0xff0000, 0x00aaff, 0xffcc00, 0xffffff];
+            for (let i = 0; i < 3; i++) {
+                const d = new THREE.Mesh(new THREE.PlaneGeometry(0.6 + Math.random()*0.5, 0.3 + Math.random()*0.4), new THREE.MeshBasicMaterial({ color: dc[i % dc.length], side: THREE.DoubleSide, transparent: true, opacity: 0.9 }));
+                const side = Math.random() < 0.5 ? -1 : 1;
+                d.position.set(side * 1.27, 0.6 + Math.random()*0.4, -1.5 + i * 1.2); d.rotation.y = side * Math.PI/2; d.rotation.z = Math.random()*0.3 - 0.15; group.add(d);
+            }
+        }
+        if (parts.cape !== 'none' || config.capeTexture) {
+            const capeColor = parts.cape !== 'none' ? parts.cape : 0xffffff;
+            const cd = createCape(capeColor, config.capeTexture);
+            group.add(cd.mesh);
+        }
+        if (parts.neon) {
+            const n = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.04, 5.1), new THREE.MeshBasicMaterial({ color: 0xff00ff })); n.position.y = 0.3; group.add(n);
+            const l = new THREE.PointLight(0xff00ff, 1.2, 22); l.position.set(0, 0.5, 0); group.add(l);
+        }
+        if (parts.neon2) {
+            const n = new THREE.Mesh(new THREE.BoxGeometry(2.7, 0.04, 5.2), new THREE.MeshBasicMaterial({ color: 0x00ffcc })); n.position.y = 0.25; group.add(n);
+            const l = new THREE.PointLight(0x00ffcc, 1.2, 22); l.position.set(0, 0.3, 0); group.add(l);
+        }
+
+        group.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+        const fs = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 5.4), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35, depthWrite: false }));
+        fs.rotation.x = -Math.PI/2; fs.position.y = 0.05; group.add(fs);
+        return group;
+    }
+
+    let previewCar = null;
+    let autoRotate = true;
+    let carRotation = 0;
+
+    function updatePreviewCar() {
+        if (previewCar) scene.remove(previewCar);
+        previewCar = createCar(config.carColor, config.parts);
+        previewCar.position.y = 0.15;
+        scene.add(previewCar);
+        carRotation = 0;
+        if (previewCar) previewCar.rotation.y = carRotation;
+    }
+
+    // Кнопки
+    document.getElementById('rotateLeft').onclick = () => { autoRotate = false; carRotation -= Math.PI / 6; };
+    document.getElementById('rotateRight').onclick = () => { autoRotate = false; carRotation += Math.PI / 6; };
+    document.getElementById('autoRotateBtn').onclick = (e) => {
+        autoRotate = !autoRotate;
+        e.target.textContent = autoRotate ? '⏸ Авто-поворот' : '▶ Авто-поворот';
+    };
+    document.getElementById('resetCamBtn').onclick = () => {
+        camera.position.set(7, 5, 9);
+        camera.lookAt(0, 0.8, 0);
+        carRotation = 0;
+    };
+
+    // === Ресайз ===
+    function resize() {
+        const w = canvas.clientWidth || 600;
+        const h = canvas.clientHeight || 480;
+        if (canvas.width !== w * renderer.getPixelRatio() || canvas.height !== h * renderer.getPixelRatio()) {
+            renderer.setSize(w, h, false);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+        }
+    }
+    window.addEventListener('resize', resize);
+
+    // === Анимация ===
+    const clock = new THREE.Clock();
+    function animate() {
+        requestAnimationFrame(animate);
+        const dt = Math.min(clock.getDelta(), 0.05);
+        resize();
+
+        if (autoRotate) carRotation += dt * 0.6;
+        if (previewCar) previewCar.rotation.y = carRotation;
+
+        // Мягкая покачивающаяся камера
+        const t = performance.now() * 0.0005;
+        camera.position.x = 7 + Math.sin(t) * 0.5;
+        camera.position.z = 9 + Math.cos(t) * 0.5;
+        camera.lookAt(0, 0.8, 0);
+
+        podiumRing.material.color.setHSL((performance.now() * 0.0002) % 1, 0.7, 0.6);
+
+        renderer.render(scene, camera);
+    }
+
+    // === Старт ===
+    renderColors();
+    renderParts();
+    renderCapes();
+    renderProfiles();
+    updateStats();
+    updatePreviewCar();
+    resize();
+    animate();
+})();
+</script>
+</body>
+</html>
